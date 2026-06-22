@@ -11,6 +11,11 @@ export default function Timer({ onTimeUp, elapsedRef }: TimerProps) {
   const [remaining, setRemaining] = useState(TIMER_MINUTES * 60 * 1000)
   const notifiedRef = useRef(false)
   const startRef = useRef(Date.now())
+  const onTimeUpRef = useRef(onTimeUp)
+
+  useEffect(() => {
+    onTimeUpRef.current = onTimeUp
+  }, [onTimeUp])
 
   useEffect(() => {
     const total = TIMER_MINUTES * 60 * 1000
@@ -21,7 +26,7 @@ export default function Timer({ onTimeUp, elapsedRef }: TimerProps) {
       setRemaining(r)
       if (r <= 0 && !notifiedRef.current) {
         notifiedRef.current = true
-        onTimeUp()
+        onTimeUpRef.current()
       }
     }, 500)
     return () => clearInterval(tick)
