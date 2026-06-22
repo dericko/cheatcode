@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { getAllProblems, getProblemBySlug } from '../src/lib/problems'
 
 describe('problems', () => {
-  it('loads all 17 problems', () => {
-    expect(getAllProblems()).toHaveLength(17)
+  it('loads all 36 problems', () => {
+    expect(getAllProblems()).toHaveLength(36)
   })
 
   it('each problem has required fields', () => {
