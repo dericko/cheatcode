@@ -19,13 +19,13 @@ export default async function HomePage() {
     <div className="min-h-screen bg-[#121212] text-gray-100 flex flex-col">
       {/* Material top app bar */}
       <header className="bg-[#1e1e2e] sticky top-0 z-10" style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <span className="font-medium text-base text-white tracking-wide">Cheatcode</span>
           <span className="text-xs tracking-widest uppercase text-indigo-400/70 hidden sm:block font-medium">Interview Prep</span>
         </div>
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-8">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8">
         {/* Hero */}
         <div className="mb-10">
           <p className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-2">Progress</p>
