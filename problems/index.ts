@@ -16,6 +16,9 @@ import { problem as invertTree } from './trees/invert-binary-tree'
 import { problem as isSymmetric } from './trees/symmetric-tree'
 import { problem as hasPathSum } from './trees/path-sum'
 import { problem as isValid } from './misc/valid-parentheses'
+import { problem as floodFill } from './graphs/flood-fill'
+import { problem as climbStairs } from './dynamic-programming/climbing-stairs'
+import { problem as rob } from './dynamic-programming/house-robber'
 
 export const allProblems: Problem[] = [
   twoSum, bestTime, containsDuplicate, productExceptSelf, maxSubArray,
@@ -23,4 +26,5 @@ export const allProblems: Problem[] = [
   reverseList, mergeTwoLists, hasCycle,
   maxDepth, invertTree, isSymmetric, hasPathSum,
   isValid,
+  floodFill, climbStairs, rob,
 ]
