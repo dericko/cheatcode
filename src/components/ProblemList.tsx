@@ -13,10 +13,11 @@ const DIFF_COLORS: Record<Difficulty, string> = {
 
 interface ProblemListProps {
   problems: Problem[]
-  solvedSlugs: Set<string>
+  solvedSlugs: string[]
 }
 
-export default function ProblemList({ problems, solvedSlugs }: ProblemListProps) {
+export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: ProblemListProps) {
+  const solvedSlugs = new Set(solvedSlugsArr)
   const [topicFilter, setTopicFilter] = useState<Topic | 'all'>('all')
   const [diffFilter, setDiffFilter] = useState<Difficulty | 'all'>('all')
 

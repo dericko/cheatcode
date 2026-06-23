@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 export default async function HomePage() {
   const problems = getAllProblems()
   const solvedProgress = await db.problemProgress.findMany({ where: { solved: true } })
-  const solvedSlugs = new Set(solvedProgress.map(p => p.slug))
+  const solvedSlugs = solvedProgress.map(p => p.slug)
 
   const easy = problems.filter(p => p.difficulty === 'easy').length
   const medium = problems.filter(p => p.difficulty === 'medium').length
