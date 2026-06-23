@@ -21,41 +21,61 @@ export default function TestResults({ result, isRunning }: TestResultsProps) {
     localStorage.setItem('testResultsMode', next)
   }
 
-  if (isRunning) return <div className="p-4 text-gray-400 text-sm">Running...</div>
-  if (!result) return <div className="p-4 text-gray-500 text-sm">Run your code to see results</div>
+  if (isRunning) {
+    return (
+      <div className="h-full bg-gray-900 flex items-center gap-2 px-4 text-sm text-gray-400">
+        <span className="inline-block w-3 h-3 rounded-full bg-gray-600 animate-pulse" />
+        Running…
+      </div>
+    )
+  }
+
+  if (!result) {
+    return (
+      <div className="h-full bg-gray-900 flex items-center px-4 text-sm text-gray-600">
+        Run your code to see results
+      </div>
+    )
+  }
 
   const passed = result.results.filter(r => r.passed).length
   const total = result.results.length
   const allPassed = passed === total
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-900 text-sm">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-gray-700">
-        <span className={`font-medium ${allPassed ? 'text-green-400' : 'text-red-400'}`}>
+    <div className="h-full overflow-y-auto bg-gray-900 text-sm flex flex-col">
+      {/* Results header */}
+      <div className={`flex items-center justify-between px-4 py-2 border-b border-gray-800 shrink-0 border-l-2 ${allPassed ? 'border-l-emerald-500' : 'border-l-red-500'}`}>
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${allPassed ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}>
           {passed}/{total} passed
         </span>
-        <button onClick={toggleMode} className="text-xs text-gray-400 hover:text-gray-200 underline">
-          {mode === 'verbose' ? 'Summary view' : 'Verbose view'}
+        <button
+          onClick={toggleMode}
+          className="text-xs text-gray-500 hover:text-gray-300 px-2.5 py-0.5 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
+        >
+          {mode === 'verbose' ? 'Summary' : 'Verbose'}
         </button>
       </div>
 
       {mode === 'verbose' && (
-        <>
-          <div className="divide-y divide-gray-800">
+        <div className="flex-1 overflow-y-auto">
+          <div className="divide-y divide-gray-800/60">
             {result.results.map((r, i) => (
-              <div key={i} className={`px-3 py-2 ${r.passed ? 'bg-green-950/30' : 'bg-red-950/30'}`}>
+              <div key={i} className={`px-4 py-2.5 ${r.passed ? '' : 'bg-red-500/5'}`}>
                 <div className="flex items-center gap-2">
-                  <span className={r.passed ? 'text-green-400' : 'text-red-400'}>{r.passed ? '✓' : '✗'}</span>
-                  <span className="text-gray-300">{r.description}</span>
+                  <span className={`text-xs font-bold ${r.passed ? 'text-emerald-400' : 'text-red-400'}`}>
+                    {r.passed ? '✓' : '✗'}
+                  </span>
+                  <span className={r.passed ? 'text-gray-400' : 'text-gray-200'}>{r.description}</span>
                 </div>
                 {!r.passed && (
-                  <div className="mt-1.5 ml-5 space-y-0.5 font-mono text-xs">
+                  <div className="mt-1.5 ml-4 bg-gray-950/60 rounded-md p-2.5 font-mono text-xs space-y-0.5">
                     {r.error ? (
                       <div className="text-red-400">Error: {r.error}</div>
                     ) : (
                       <>
-                        <div className="text-gray-400">Expected: <span className="text-green-400">{JSON.stringify(r.expected)}</span></div>
-                        <div className="text-gray-400">Got:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span className="text-red-400">{JSON.stringify(r.actual)}</span></div>
+                        <div className="text-gray-500">expected <span className="text-emerald-400">{JSON.stringify(r.expected)}</span></div>
+                        <div className="text-gray-500">received <span className="text-red-400">{JSON.stringify(r.actual)}</span></div>
                       </>
                     )}
                   </div>
@@ -64,14 +84,16 @@ export default function TestResults({ result, isRunning }: TestResultsProps) {
             ))}
           </div>
           {result.consoleOutput.length > 0 && (
-            <div className="px-3 py-2 border-t border-gray-700">
-              <div className="text-xs text-gray-500 mb-1">Console</div>
-              {result.consoleOutput.map((line, i) => (
-                <div key={i} className="font-mono text-xs text-yellow-300">{line}</div>
-              ))}
+            <div className="px-4 py-3 border-t border-gray-800">
+              <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Console</div>
+              <div className="bg-gray-950 border border-gray-800 rounded-md p-2.5 space-y-0.5">
+                {result.consoleOutput.map((line, i) => (
+                  <div key={i} className="font-mono text-xs text-yellow-300">{line}</div>
+                ))}
+              </div>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   )

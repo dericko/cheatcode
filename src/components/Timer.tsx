@@ -33,15 +33,17 @@ export default function Timer({ onTimeUp, elapsedRef }: TimerProps) {
   }, [])
 
   const overtime = remaining < 0
+  const nearEnd = !overtime && remaining < 300_000
   const display = Math.abs(remaining)
   const mins = Math.floor(display / 60_000)
   const secs = Math.floor((display % 60_000) / 1000)
 
+  const colorClass = overtime ? 'text-orange-400' : nearEnd ? 'text-yellow-400' : 'text-gray-400'
+
   return (
-    <span className={`font-mono text-sm tabular-nums ${
-      overtime ? 'text-orange-400' : remaining < 300_000 ? 'text-yellow-400' : 'text-gray-300'
-    }`}>
+    <div className={`flex items-center gap-1.5 font-mono text-sm tabular-nums ${colorClass}`}>
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${overtime ? 'bg-orange-400 animate-pulse' : nearEnd ? 'bg-yellow-400' : 'bg-gray-600'}`} />
       {overtime ? '+' : ''}{mins}:{String(secs).padStart(2, '0')}
-    </span>
+    </div>
   )
 }
