@@ -29,6 +29,12 @@ import { problem as isValidBST } from './trees/validate-binary-search-tree'
 import { problem as numIslands } from './graphs/number-of-islands'
 import { problem as coinChange } from './dynamic-programming/coin-change'
 import { problem as lengthOfLIS } from './dynamic-programming/longest-increasing-subsequence'
+import { problem as trap } from './arrays/trapping-rain-water'
+import { problem as minWindow } from './strings/minimum-window-substring'
+import { problem as mergeKLists } from './linked-lists/merge-k-sorted-lists'
+import { problem as maxPathSum } from './trees/binary-tree-maximum-path-sum'
+import { problem as ladderLength } from './graphs/word-ladder'
+import { problem as minDistance } from './dynamic-programming/edit-distance'
 
 export const allProblems: Problem[] = [
   // Easy (20)
@@ -44,4 +50,6 @@ export const allProblems: Problem[] = [
   levelOrder, isValidBST,
   numIslands,
   coinChange, lengthOfLIS,
+  // Hard (6)
+  trap, minWindow, mergeKLists, maxPathSum, ladderLength, minDistance,
 ]
