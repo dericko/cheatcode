@@ -16,33 +16,33 @@ export default async function HomePage() {
   const pct = problems.length > 0 ? Math.round((solvedCount / problems.length) * 100) : 0
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
-      {/* Nav */}
-      <header className="border-b border-gray-800 bg-gray-950/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-          <span className="font-semibold tracking-tight text-gray-100">⚡ Cheatcode</span>
-          <span className="text-xs text-gray-500 hidden sm:block">interview prep</span>
+    <div className="min-h-screen bg-[#121212] text-gray-100 flex flex-col">
+      {/* Material top app bar */}
+      <header className="bg-[#1e1e2e] sticky top-0 z-10" style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+          <span className="font-medium text-base text-white tracking-wide">Cheatcode</span>
+          <span className="text-xs tracking-widest uppercase text-indigo-400/70 hidden sm:block font-medium">Interview Prep</span>
         </div>
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-8">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-8">
         {/* Hero */}
-        <div className="mb-8">
-          <div className="flex items-end justify-between mb-3">
-            <div>
-              <h1 className="text-xl font-semibold text-gray-100 mb-0.5">Problems</h1>
-              <p className="text-sm text-gray-500">{solvedCount} of {problems.length} solved</p>
-            </div>
+        <div className="mb-10">
+          <p className="text-xs uppercase tracking-widest text-gray-500 font-medium mb-2">Progress</p>
+          <div className="flex items-end justify-between mb-4">
+            <h1 className="text-3xl font-light text-white">
+              {solvedCount} <span className="text-gray-500 text-xl">/ {problems.length}</span>
+            </h1>
             <div className="flex items-center gap-2 text-xs">
-              <span className="px-2 py-1 rounded-full bg-green-500/10 text-green-400 font-medium">{easy} easy</span>
-              <span className="px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-400 font-medium">{medium} medium</span>
-              <span className="px-2 py-1 rounded-full bg-red-500/10 text-red-400 font-medium">{hard} hard</span>
+              <span className="px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 font-medium border border-green-500/20">{easy} easy</span>
+              <span className="px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-400 font-medium border border-yellow-500/20">{medium} medium</span>
+              <span className="px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 font-medium border border-red-500/20">{hard} hard</span>
             </div>
           </div>
-          {/* Progress bar */}
-          <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+          {/* Material linear progress */}
+          <div className="h-1 bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-emerald-500 rounded-full transition-all"
+              className="h-full bg-indigo-500 rounded-full transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>

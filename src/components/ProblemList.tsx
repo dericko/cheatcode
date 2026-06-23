@@ -6,16 +6,10 @@ import type { Problem, Difficulty, Topic } from '@/types/problem'
 const TOPICS: Topic[] = ['arrays', 'strings', 'linked-lists', 'trees', 'graphs', 'dynamic-programming', 'misc']
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard']
 
-const DIFF_DOT: Record<Difficulty, string> = {
-  easy: 'bg-green-400',
-  medium: 'bg-yellow-400',
-  hard: 'bg-red-400',
-}
-
-const DIFF_TEXT: Record<Difficulty, string> = {
-  easy: 'text-green-400',
-  medium: 'text-yellow-400',
-  hard: 'text-red-400',
+const DIFF_COLOR: Record<Difficulty, { dot: string; text: string; chip: string }> = {
+  easy:   { dot: 'bg-green-400',  text: 'text-green-400',  chip: 'bg-green-500/10 text-green-400 border-green-500/20' },
+  medium: { dot: 'bg-yellow-400', text: 'text-yellow-400', chip: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
+  hard:   { dot: 'bg-red-400',    text: 'text-red-400',    chip: 'bg-red-500/10 text-red-400 border-red-500/20' },
 }
 
 const SELECT_CHEVRON = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`
@@ -35,13 +29,14 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
     (diffFilter === 'all' || p.difficulty === diffFilter)
   )
 
-  const selectClass = "bg-gray-900 text-gray-300 pl-3 pr-8 py-1.5 rounded-full text-sm border border-gray-700 hover:border-gray-500 focus:outline-none focus:border-gray-500 transition-colors cursor-pointer appearance-none"
+  const selectClass = "bg-[#2a2a3a] text-gray-300 pl-3 pr-8 py-1.5 rounded-full text-sm border border-white/10 hover:border-indigo-500/50 focus:outline-none focus:border-indigo-500/70 transition-colors cursor-pointer appearance-none"
   const selectStyle = { backgroundImage: SELECT_CHEVRON, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }
 
   return (
     <div>
-      {/* Filters */}
+      {/* Filter row */}
       <div className="flex gap-2 mb-6 flex-wrap items-center">
+        <p className="text-xs uppercase tracking-widest text-gray-500 font-medium mr-1 hidden sm:block">Filter</p>
         <select value={topicFilter} onChange={e => setTopicFilter(e.target.value as Topic | 'all')} className={selectClass} style={selectStyle}>
           <option value="all">All Topics</option>
           {TOPICS.map(t => <option key={t} value={t}>{t}</option>)}
@@ -53,30 +48,44 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
         <span className="ml-auto text-xs text-gray-600 tabular-nums">{filtered.length} problems</span>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {filtered.map(p => (
-          <Link
-            key={p.slug}
-            href={`/problems/${p.slug}`}
-            className="group flex flex-col gap-3 bg-gray-900 border border-gray-800 rounded-xl p-4 hover:border-gray-600 hover:bg-gray-800/60 transition-all"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <span className="font-medium text-gray-100 group-hover:text-white leading-snug text-[15px]">
-                {p.title}
-              </span>
-              {solvedSlugs.has(p.slug) && (
-                <span className="text-xs px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-400 font-semibold shrink-0 mt-0.5">✓</span>
-              )}
-            </div>
-            <div className="flex items-center gap-1.5 mt-auto">
-              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${DIFF_DOT[p.difficulty]}`} />
-              <span className={`text-xs font-medium ${DIFF_TEXT[p.difficulty]}`}>{p.difficulty}</span>
-              <span className="text-gray-700 text-xs mx-0.5">·</span>
-              <span className="text-xs text-gray-500">{p.topic}</span>
-            </div>
-          </Link>
-        ))}
+      {/* Material card grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {filtered.map(p => {
+          const c = DIFF_COLOR[p.difficulty]
+          const solved = solvedSlugs.has(p.slug)
+          return (
+            <Link
+              key={p.slug}
+              href={`/problems/${p.slug}`}
+              className="group flex flex-col gap-4 bg-[#1e1e2e] rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5"
+              style={{
+                boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.5)')}
+              onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4)')}
+            >
+              {/* Top row: title + solved */}
+              <div className="flex items-start justify-between gap-3">
+                <span className="font-medium text-[15px] leading-snug text-gray-100 group-hover:text-white transition-colors">
+                  {p.title}
+                </span>
+                {solved && (
+                  <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <span className="text-green-400 text-[10px] font-bold">✓</span>
+                  </span>
+                )}
+              </div>
+
+              {/* Bottom row: difficulty chip + topic */}
+              <div className="flex items-center gap-2 mt-auto">
+                <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${c.chip}`}>
+                  {p.difficulty}
+                </span>
+                <span className="text-[11px] text-gray-500 font-medium">{p.topic}</span>
+              </div>
+            </Link>
+          )
+        })}
       </div>
     </div>
   )

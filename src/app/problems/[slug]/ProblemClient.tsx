@@ -8,10 +8,10 @@ import type { RunResult } from '@/types/runner'
 
 const Editor = dynamic(() => import('@/components/Editor'), { ssr: false })
 
-const DIFF_BADGE: Record<string, string> = {
-  easy: 'bg-green-500/15 text-green-400 ring-1 ring-green-500/20',
-  medium: 'bg-yellow-500/15 text-yellow-400 ring-1 ring-yellow-500/20',
-  hard: 'bg-red-500/15 text-red-400 ring-1 ring-red-500/20',
+const DIFF_CHIP: Record<string, string> = {
+  easy:   'bg-green-500/10 text-green-400 border border-green-500/20',
+  medium: 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20',
+  hard:   'bg-red-500/10 text-red-400 border border-red-500/20',
 }
 
 export default function ProblemClient({ problem }: { problem: Problem }) {
@@ -59,29 +59,33 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-950 text-gray-100 overflow-hidden">
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 py-2.5 border-b border-gray-800 bg-gray-900/95 backdrop-blur shrink-0 gap-2 flex-wrap">
-        <div className="flex items-center gap-2 min-w-0">
+    <div className="h-screen flex flex-col bg-[#121212] text-gray-100 overflow-hidden">
+      {/* Material app bar */}
+      <header
+        className="flex items-center justify-between px-5 py-0 bg-[#1e1e2e] shrink-0 h-14 gap-2 flex-wrap"
+        style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
+      >
+        <div className="flex items-center gap-3 min-w-0">
           <a
             href="/"
-            className="text-gray-500 hover:text-gray-300 text-sm px-2 py-1 rounded-md hover:bg-gray-800 transition-colors shrink-0"
+            className="text-gray-400 hover:text-white text-sm px-2 py-1.5 rounded-lg hover:bg-white/10 transition-colors shrink-0 font-medium"
           >
             ← Back
           </a>
-          <span className="text-gray-700 shrink-0">/</span>
+          <span className="text-white/20 shrink-0">|</span>
           <h1 className="font-medium text-sm text-gray-200 truncate">{problem.title}</h1>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${DIFF_BADGE[problem.difficulty]}`}>
+          <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full shrink-0 ${DIFF_CHIP[problem.difficulty]}`}>
             {problem.difficulty}
           </span>
           <span className="text-xs text-gray-600 hidden sm:block shrink-0">{problem.topic}</span>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-4 shrink-0">
           <Timer onTimeUp={() => showToast("Time's up — keep going!")} elapsedRef={elapsedRef} />
           <button
             onClick={handleRun}
             disabled={isRunning}
-            className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+            className="px-5 py-1.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+            style={{ boxShadow: isRunning ? 'none' : '0 2px 8px rgba(99,102,241,0.4)' }}
           >
             {isRunning ? 'Running…' : 'Run'}
           </button>
@@ -91,7 +95,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
       {/* Body */}
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         {/* Description panel */}
-        <div className="md:w-2/5 md:min-w-64 overflow-y-auto p-5 border-b md:border-b-0 md:border-r border-gray-800 text-[15px] text-gray-300 leading-7 max-h-48 md:max-h-none">
+        <div className="md:w-2/5 md:min-w-64 overflow-y-auto p-6 border-r border-white/5 text-[15px] text-gray-300 leading-7 max-h-48 md:max-h-none">
           <pre className="whitespace-pre-wrap font-sans">{problem.description.trim()}</pre>
         </div>
 
@@ -100,15 +104,18 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
           <div className="flex-1 overflow-hidden">
             <Editor value={code} onChange={setCode} />
           </div>
-          <div className="h-56 border-t border-gray-800 shrink-0 overflow-hidden">
+          <div className="h-56 border-t border-white/5 shrink-0 overflow-hidden">
             <TestResults result={result} isRunning={isRunning} />
           </div>
         </div>
       </div>
 
-      {/* Toast */}
+      {/* Material snackbar-style toast */}
       {toast && (
-        <div className="fixed bottom-5 right-5 bg-gray-800 border border-gray-700 text-gray-100 px-4 py-2.5 rounded-lg shadow-2xl text-sm z-50 flex items-center gap-2">
+        <div
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#323248] text-gray-100 px-5 py-3 rounded-full text-sm z-50 font-medium"
+          style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.6)' }}
+        >
           {toast}
         </div>
       )}
