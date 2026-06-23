@@ -19,13 +19,13 @@ export default async function HomePage() {
     <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
       {/* Nav */}
       <header className="border-b border-gray-800 bg-gray-950/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
           <span className="font-semibold tracking-tight text-gray-100">⚡ Cheatcode</span>
           <span className="text-xs text-gray-500 hidden sm:block">interview prep</span>
         </div>
       </header>
 
-      <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-8">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-8">
         {/* Hero */}
         <div className="mb-8">
           <div className="flex items-end justify-between mb-3">
