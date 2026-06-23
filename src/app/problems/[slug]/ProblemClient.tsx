@@ -19,11 +19,13 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   const [result, setResult] = useState<RunResult | null>(null)
   const [isRunning, setIsRunning] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const elapsedRef = useRef(0)
 
   const showToast = (msg: string) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
     setToast(msg)
-    setTimeout(() => setToast(null), 4000)
+    toastTimerRef.current = setTimeout(() => setToast(null), 4000)
   }
 
   const handleRun = async () => {
@@ -34,6 +36,10 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ slug: problem.slug, code }),
       })
+      if (!res.ok) {
+        showToast('Error connecting to runner')
+        return
+      }
       const data: RunResult = await res.json()
       setResult(data)
 

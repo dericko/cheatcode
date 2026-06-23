@@ -21,6 +21,11 @@ console.log = (...args: any[]) => {
   __console.push(line)
   process.stderr.write(line + '\\n')
 }
+const __origStdoutWrite = process.stdout.write.bind(process.stdout)
+process.stdout.write = (chunk: any, ...args: any[]) => {
+  __console.push(String(chunk))
+  return process.stderr.write(chunk, ...args)
+}
 
 ${req.userCode}
 
@@ -50,7 +55,7 @@ for (const tc of __testCases) {
   }
 }
 
-process.stdout.write(JSON.stringify({ results: __results, consoleOutput: __console }))
+__origStdoutWrite(JSON.stringify({ results: __results, consoleOutput: __console }))
 `
 }
 

@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   if (passed) {
     const existing = await db.problemProgress.findUnique({ where: { slug } })
-    const betterTime = !existing?.bestTimeMs || timeSpentMs < existing.bestTimeMs
+    const betterTime = existing?.bestTimeMs == null || timeSpentMs < existing.bestTimeMs
 
     await db.problemProgress.upsert({
       where: { slug },
