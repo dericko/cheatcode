@@ -1,4 +1,5 @@
 'use client'
+import { useRef } from 'react'
 import MonacoEditor, { type OnMount } from '@monaco-editor/react'
 import { KeyMod, KeyCode } from 'monaco-editor'
 
@@ -9,9 +10,12 @@ interface EditorProps {
 }
 
 export default function Editor({ value, onChange, onRun }: EditorProps) {
+  const onRunRef = useRef(onRun)
+  onRunRef.current = onRun
+
   const handleMount: OnMount = (editor) => {
     editor.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, () => {
-      onRun?.()
+      onRunRef.current?.()
     })
   }
 
