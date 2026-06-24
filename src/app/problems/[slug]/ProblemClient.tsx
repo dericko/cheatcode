@@ -7,6 +7,7 @@ import TestResults from '@/components/TestResults'
 import HintChat from '@/components/HintChat'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import type { Problem } from '@/types/problem'
 import type { RunResult, ComplexityResult } from '@/types/runner'
 
@@ -105,15 +106,13 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
           <Timer onTimeUp={() => showToast("Time's up — keep going!")} elapsedRef={elapsedRef} />
           <div className="flex items-center gap-2">
             <label className="flex items-center gap-1.5 cursor-pointer select-none">
-              <input
-                type="checkbox"
+              <Checkbox
+                id="feedback-toggle"
                 checked={!skipAnalysis}
-                onChange={e => {
-                  const feedback = e.target.checked
-                  setSkipAnalysis(!feedback)
-                  if (!feedback) setComplexity(null)
+                onCheckedChange={checked => {
+                  setSkipAnalysis(!checked)
+                  if (!checked) setComplexity(null)
                 }}
-                className="accent-indigo-500 w-3.5 h-3.5"
               />
               <span className="text-xs text-muted hidden sm:block">feedback</span>
             </label>
