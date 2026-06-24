@@ -33,17 +33,6 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
     localStorage.setItem(STORAGE_KEY(problem.slug), code)
   }, [code, problem.slug])
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-        e.preventDefault()
-        handleRun()
-      }
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [code])
-
   const showToast = (msg: string) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
     setToast(msg)
