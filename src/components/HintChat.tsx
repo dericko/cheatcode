@@ -1,8 +1,9 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
+import { MessageSquare, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -60,83 +61,101 @@ export default function HintChat({ slug, code }: HintChatProps) {
 
   return (
     <>
-      {/* Left-side panel */}
-      {open && (
-        <div
-          className="fixed left-0 z-30 flex flex-col bg-surface border-r border-border"
-          style={{ top: '3.5rem', width: '22rem', height: 'calc(100vh - 3.5rem)', boxShadow: '4px 0 24px rgba(0,0,0,0.4)' }}
-        >
-          {/* Panel header */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-border shrink-0">
-            <span className="text-sm font-semibold text-foreground">Hints</span>
-            <Badge variant="default" className="text-[11px] bg-primary/10 text-primary border-primary/20">
-              AI · no spoilers
-            </Badge>
-          </div>
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 z-20 bg-black/40 transition-opacity duration-200 ${
+          open ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setOpen(false)}
+      />
 
-          {/* Messages */}
-          <div className="flex-1 min-h-0 overflow-y-auto px-5 py-4 space-y-3">
-            {messages.length === 0 && (
-              <p className="text-muted text-xs leading-relaxed">
-                Ask for a nudge. The AI won't write code for you — it'll ask questions to help you find the insight yourself.
-              </p>
-            )}
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] px-3 py-2 rounded-xl text-xs leading-relaxed ${
-                  m.role === 'user'
-                    ? 'bg-primary text-primary-foreground rounded-br-sm'
-                    : 'bg-surface-variant text-foreground rounded-bl-sm'
-                }`}>
-                  {m.content}
-                </div>
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-surface-variant px-3 py-2 rounded-xl rounded-bl-sm">
-                  <span className="flex gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-muted animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-muted animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-muted animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </span>
-                </div>
-              </div>
-            )}
-            <div ref={bottomRef} />
+      {/* Panel — always in DOM, slides via transform */}
+      <div
+        className="fixed right-0 z-30 flex flex-col bg-card border-l border-border w-80 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{
+          top: '3.5rem',
+          height: 'calc(100vh - 3.5rem)',
+          transform: open ? 'translateX(0)' : 'translateX(100%)',
+        }}
+      >
+        {/* Panel header */}
+        <div className="flex items-center justify-between px-5 py-3 border-b shrink-0">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-semibold">Hints</span>
           </div>
-
-          {/* Input row */}
-          <div className="flex items-center gap-2 px-4 py-3 border-t border-border shrink-0">
-            <Input
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
-              placeholder="Ask for a hint…"
-              autoFocus
-              className="flex-1 bg-surface-variant border-border text-foreground placeholder:text-muted text-xs"
-            />
-            <Button
-              onClick={send}
-              disabled={isLoading || !input.trim()}
-              variant="default"
-              size="sm"
-            >
-              Send
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-muted-foreground">AI · no spoilers</span>
+            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setOpen(false)}>
+              <X className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
-      )}
 
-      {/* FAB */}
-      <Button
+        {/* Messages */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-3">
+          {messages.length === 0 && (
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              Ask for a nudge. The AI won't write code for you — it'll ask questions to help you find the insight yourself.
+            </p>
+          )}
+          {messages.map((m, i) => (
+            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] px-3 py-2 rounded-2xl text-xs leading-relaxed ${
+                m.role === 'user'
+                  ? 'bg-primary text-primary-foreground rounded-br-sm'
+                  : 'bg-muted text-foreground rounded-bl-sm'
+              }`}>
+                {m.content}
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-muted px-3 py-3 rounded-2xl rounded-bl-sm space-y-1.5">
+                <Skeleton className="h-3 w-36" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+
+        {/* Input row */}
+        <div className="flex items-center gap-2 px-4 py-3 border-t shrink-0">
+          <Input
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={onKeyDown}
+            placeholder="Ask for a hint…"
+            autoFocus={open}
+            className="flex-1 text-xs"
+          />
+          <Button
+            onClick={send}
+            disabled={!input.trim()}
+            size="sm"
+          >
+            Send
+          </Button>
+        </div>
+      </div>
+
+      {/* Fixed tab — right edge, always visible */}
+      <button
         onClick={() => setOpen(o => !o)}
-        size="lg"
-        className="fixed bottom-6 right-6 z-40 rounded-full px-4 py-2.5 bg-primary hover:bg-primary-hover"
-        style={{ boxShadow: '0 4px 16px rgba(99,102,241,0.4)' }}
+        className="fixed right-0 top-1/2 z-40 bg-card border border-r-0 border-border rounded-l-lg shadow-sm px-2 py-4 flex flex-col items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+        style={{ transform: 'translateY(-50%)' }}
+        aria-label={open ? 'Close hints' : 'Open hints'}
       >
-        {open ? '✕ Close hints' : '💡 Hints'}
-      </Button>
+        <MessageSquare className="h-4 w-4" />
+        <span
+          className="text-[10px] font-medium"
+          style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+        >
+          Hints
+        </span>
+      </button>
     </>
   )
 }
