@@ -76,10 +76,10 @@ export default function HintChat({ slug, code }: HintChatProps) {
 
       {/* Panel — always in DOM, slides via transform */}
       <div
-        className="fixed right-0 z-30 flex flex-col bg-card border-l border-border w-80 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        className="fixed right-0 z-30 flex flex-col bg-card border-l border-border w-72 transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
         style={{
-          top: '3.5rem',
-          height: 'calc(100vh - 3.5rem)',
+          top: '3rem',
+          height: 'calc(100vh - 3rem)',
           transform: open ? 'translateX(0)' : 'translateX(100%)',
         }}
       >

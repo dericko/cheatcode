@@ -120,17 +120,20 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
             />
             <span className="text-xs text-muted-foreground hidden sm:block">feedback</span>
           </label>
-          <Button
-            onClick={handleRun}
-            disabled={isRunning}
-            size="sm"
-            className="px-5 font-medium"
-          >
-            {isRunning
-              ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Running</>
-              : 'Run'
-            }
-          </Button>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              onClick={handleRun}
+              disabled={isRunning}
+              size="sm"
+              className="px-5 font-medium"
+            >
+              {isRunning
+                ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Running</>
+                : 'Run'
+              }
+            </Button>
+            <span className="text-[11px] text-muted-foreground/50 hidden lg:block">⌘↵</span>
+          </div>
           <ThemeToggle />
         </div>
       </header>
@@ -138,7 +141,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
       {/* 3-panel body */}
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         {/* Description — left column */}
-        <div className="md:w-72 lg:w-80 shrink-0 overflow-y-auto border-b md:border-b-0 md:border-r border-border p-5 max-h-48 md:max-h-none">
+        <div className="md:w-64 lg:w-72 shrink-0 overflow-y-auto border-b md:border-b-0 md:border-r border-border p-5 max-h-48 md:max-h-none">
           <pre className="whitespace-pre-wrap font-sans text-sm text-muted-foreground leading-relaxed">{problem.description.trim()}</pre>
         </div>
 
@@ -153,7 +156,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         </div>
 
         {/* Results — right column */}
-        <div className="md:w-80 lg:w-96 shrink-0 border-t md:border-t-0 md:border-l border-border overflow-y-auto">
+        <div className="md:w-72 lg:w-80 shrink-0 border-t md:border-t-0 md:border-l border-border overflow-y-auto">
           <TestResults
             result={result}
             isRunning={isRunning}
