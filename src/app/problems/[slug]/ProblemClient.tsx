@@ -22,6 +22,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   const [result, setResult] = useState<RunResult | null>(null)
   const [complexity, setComplexity] = useState<ComplexityResult | null>(null)
   const [isRunning, setIsRunning] = useState(false)
+  const [skipAnalysis, setSkipAnalysis] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const elapsedRef = useRef(0)
@@ -42,19 +43,22 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
     setComplexity(null)
     const runId = ++runIdRef.current
     try {
+      const analyzePromise = skipAnalysis
+        ? Promise.resolve(null)
+        : fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slug: problem.slug, code }),
+          }).then(r => r.ok ? r.json() : null).then(data => {
+            if (data && runIdRef.current === runId) setComplexity(data)
+          }).catch(() => {})
       const [res] = await Promise.all([
         fetch('/api/run', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slug: problem.slug, code }),
         }),
-        fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug: problem.slug, code }),
-        }).then(r => r.ok ? r.json() : null).then(data => {
-          if (data && runIdRef.current === runId) setComplexity(data)
-        }).catch(() => {}),
+        analyzePromise,
       ])
 
       if (!res.ok) {
@@ -100,6 +104,19 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         <div className="flex items-center gap-4 shrink-0">
           <Timer onTimeUp={() => showToast("Time's up — keep going!")} elapsedRef={elapsedRef} />
           <div className="flex items-center gap-2">
+            <label className="flex items-center gap-1.5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!skipAnalysis}
+                onChange={e => {
+                  const feedback = e.target.checked
+                  setSkipAnalysis(!feedback)
+                  if (!feedback) setComplexity(null)
+                }}
+                className="accent-indigo-500 w-3.5 h-3.5"
+              />
+              <span className="text-xs text-muted hidden sm:block">feedback</span>
+            </label>
             <Button
               onClick={handleRun}
               disabled={isRunning}
