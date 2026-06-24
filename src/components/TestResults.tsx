@@ -108,39 +108,40 @@ export default function TestResults({ result, isRunning, complexity, isAnalyzing
             </div>
           )}
 
-          {/* Complexity section */}
-          {isAnalyzing && !complexity && (
-            <div className="px-4 py-3 border-t space-y-2">
-              <div className="flex items-center gap-2 mb-1">
-                <Skeleton className="h-3 w-20" />
-                <Skeleton className="h-5 w-16 rounded-full" />
-              </div>
-              <Skeleton className="h-3 w-28" />
-              <Skeleton className="h-3 w-24" />
-            </div>
-          )}
+        </div>
+      )}
 
-          {complexity && (
-            <div className="px-4 py-3 border-t">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Complexity</span>
-                <Badge className={complexity.passesTarget
-                  ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
-                  : 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'
-                }>
-                  {complexity.passesTarget ? 'optimal' : 'suboptimal'}
-                </Badge>
-              </div>
-              <div className="flex gap-3 text-xs text-muted-foreground mb-1.5">
-                <span>Time: <span className="text-foreground font-mono">{complexity.timeComplexity}</span></span>
-                <span>Space: <span className="text-foreground font-mono">{complexity.spaceComplexity}</span></span>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">{complexity.explanation}</p>
-              {complexity.hint && (
-                <div className="mt-2 px-3 py-2 bg-muted rounded-lg text-xs text-muted-foreground leading-relaxed border">
-                  {complexity.hint}
-                </div>
-              )}
+      {/* Complexity — shown regardless of verbose/summary mode */}
+      {isAnalyzing && !complexity && (
+        <div className="px-4 py-3 border-t space-y-2">
+          <div className="flex items-center gap-2 mb-1">
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-5 w-16 rounded-full" />
+          </div>
+          <Skeleton className="h-3 w-28" />
+          <Skeleton className="h-3 w-24" />
+        </div>
+      )}
+
+      {complexity && (
+        <div className="px-4 py-3 border-t">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Complexity</span>
+            <Badge className={complexity.passesTarget
+              ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
+              : 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'
+            }>
+              {complexity.passesTarget ? 'optimal' : 'suboptimal'}
+            </Badge>
+          </div>
+          <div className="flex gap-3 text-xs text-muted-foreground mb-1.5">
+            <span>Time: <span className="text-foreground font-mono">{complexity.timeComplexity}</span></span>
+            <span>Space: <span className="text-foreground font-mono">{complexity.spaceComplexity}</span></span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">{complexity.explanation}</p>
+          {complexity.hint && (
+            <div className="mt-2 px-3 py-2 bg-muted rounded-lg text-xs text-muted-foreground leading-relaxed border">
+              {complexity.hint}
             </div>
           )}
         </div>

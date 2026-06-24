@@ -21,6 +21,11 @@ export default function HintChat({ slug, code }: HintChatProps) {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (open) inputRef.current?.focus()
+  }, [open])
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -124,11 +129,11 @@ export default function HintChat({ slug, code }: HintChatProps) {
         {/* Input row */}
         <div className="flex items-center gap-2 px-4 py-3 border-t shrink-0">
           <Input
+            ref={inputRef}
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Ask for a hint…"
-            autoFocus={open}
             className="flex-1 text-xs"
           />
           <Button

@@ -4,6 +4,7 @@
 
 /* ── Light mode tokens (shadcn zinc defaults) ─────────────── */
 :root {
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #09090b;
   --card: #ffffff;
@@ -28,6 +29,7 @@
 
 /* ── Dark mode tokens (shadcn zinc defaults) ──────────────── */
 .dark {
+  color-scheme: dark;
   --background: #09090b;
   --foreground: #fafafa;
   --card: #09090b;
