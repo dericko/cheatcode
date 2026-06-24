@@ -52,19 +52,19 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
       </div>
 
       {/* Card grid */}
-      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+      <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
         {filtered.map(p => (
-          <Link key={p.slug} href={`/problems/${p.slug}`} className="no-underline">
-            <Card className="hover:bg-accent/50 transition-colors duration-150 cursor-pointer h-full">
-              <CardContent className="p-5 flex flex-col h-full">
-                <p className="text-sm font-semibold text-foreground flex-1 mb-4 leading-snug">
+          <Link key={p.slug} href={`/problems/${p.slug}`} className="no-underline group">
+            <Card className="border-border hover:border-foreground/25 transition-colors duration-150 cursor-pointer h-full bg-card">
+              <CardContent className="p-4 flex flex-col h-full">
+                <p className="text-sm font-medium text-foreground flex-1 mb-4 leading-snug">
                   {p.title}
                 </p>
                 <div className="flex items-center justify-between gap-2 mt-auto">
                   <Badge variant={p.difficulty}>{p.difficulty}</Badge>
                   <span className="text-muted-foreground text-xs truncate">{p.topic}</span>
                   {solvedSlugs.has(p.slug)
-                    ? <span className="shrink-0 text-green-500 text-xs font-bold">✓</span>
+                    ? <span className="shrink-0 text-primary text-xs font-semibold">✓</span>
                     : <span className="shrink-0 w-3" />
                   }
                 </div>
