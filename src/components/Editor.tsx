@@ -7,9 +7,10 @@ interface EditorProps {
   value: string
   onChange: (value: string) => void
   onRun?: () => void
+  theme?: string
 }
 
-export default function Editor({ value, onChange, onRun }: EditorProps) {
+export default function Editor({ value, onChange, onRun, theme = 'vs-dark' }: EditorProps) {
   const onRunRef = useRef(onRun)
   onRunRef.current = onRun
 
@@ -25,7 +26,7 @@ export default function Editor({ value, onChange, onRun }: EditorProps) {
       language="typescript"
       value={value}
       onChange={(val) => onChange(val ?? '')}
-      theme="vs-dark"
+      theme={theme}
       onMount={handleMount}
       options={{
         minimap: { enabled: false },

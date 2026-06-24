@@ -2,11 +2,14 @@
 import { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { useTheme } from 'next-themes'
+import { Loader2 } from 'lucide-react'
 import Timer from '@/components/Timer'
 import TestResults from '@/components/TestResults'
 import HintChat from '@/components/HintChat'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import type { Problem } from '@/types/problem'
 import type { RunResult, ComplexityResult } from '@/types/runner'
 
@@ -15,6 +18,7 @@ const Editor = dynamic(() => import('@/components/Editor'), { ssr: false })
 const STORAGE_KEY = (slug: string) => `code:${slug}`
 
 export default function ProblemClient({ problem }: { problem: Problem }) {
+  const { resolvedTheme } = useTheme()
   const [code, setCode] = useState(() => {
     if (typeof window === 'undefined') return problem.starterCode
     return localStorage.getItem(STORAGE_KEY(problem.slug)) ?? problem.starterCode
@@ -22,6 +26,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   const [result, setResult] = useState<RunResult | null>(null)
   const [complexity, setComplexity] = useState<ComplexityResult | null>(null)
   const [isRunning, setIsRunning] = useState(false)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const elapsedRef = useRef(0)
@@ -39,6 +44,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
 
   const handleRun = async () => {
     setIsRunning(true)
+    setIsAnalyzing(true)
     setComplexity(null)
     const runId = ++runIdRef.current
     try {
@@ -54,7 +60,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
           body: JSON.stringify({ slug: problem.slug, code }),
         }).then(r => r.ok ? r.json() : null).then(data => {
           if (data && runIdRef.current === runId) setComplexity(data)
-        }).catch(() => {}),
+        }).catch(() => {}).finally(() => setIsAnalyzing(false)),
       ])
 
       if (!res.ok) {
@@ -70,7 +76,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slug: problem.slug, code, passed: true, timeSpentMs: elapsedRef.current }),
         })
-        showToast('All tests passed! 🎉')
+        showToast('All tests passed!')
       }
     } catch {
       showToast('Error connecting to runner')
@@ -81,67 +87,74 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
-      {/* App bar */}
-      <header
-        className="flex items-center justify-between px-5 bg-surface shrink-0 h-14 gap-2 border-b border-border"
-        style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-      >
+      {/* Header */}
+      <header className="flex items-center justify-between px-6 bg-background/80 backdrop-blur-sm shrink-0 h-14 gap-2 border-b">
         <div className="flex items-center gap-3 min-w-0">
           <Button variant="ghost" size="sm" asChild className="shrink-0">
             <Link href="/">← Back</Link>
           </Button>
-          <span className="text-foreground/20 shrink-0">|</span>
-          <h1 className="text-sm font-medium text-foreground truncate">{problem.title}</h1>
+          <span className="text-foreground/30 shrink-0">|</span>
+          <h1 className="text-sm font-medium truncate">{problem.title}</h1>
           <Badge variant={problem.difficulty as 'easy' | 'medium' | 'hard'} className="shrink-0">
             {problem.difficulty}
           </Badge>
-          <span className="text-xs text-muted hidden sm:block shrink-0">{problem.topic}</span>
+          <span className="text-xs text-muted-foreground hidden sm:block shrink-0">{problem.topic}</span>
         </div>
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="flex items-center gap-3 shrink-0">
           <Timer onTimeUp={() => showToast("Time's up — keep going!")} elapsedRef={elapsedRef} />
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleRun}
-              disabled={isRunning}
-              variant="default"
-              style={{ boxShadow: isRunning ? 'none' : '0 2px 8px rgba(99,102,241,0.4)' }}
-            >
-              {isRunning ? 'Running…' : 'Run'}
-            </Button>
-            <span className="text-xs text-muted hidden sm:block">⌘↵</span>
-          </div>
+          <Button
+            onClick={handleRun}
+            disabled={isRunning}
+            size="sm"
+          >
+            {isRunning
+              ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Running</>
+              : 'Run'
+            }
+          </Button>
+          <span className="text-xs text-muted-foreground hidden sm:block">⌘↵</span>
+          <ThemeToggle />
         </div>
       </header>
 
-      {/* Body */}
+      {/* 3-panel body */}
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
-        {/* Description panel */}
-        <div className="md:w-2/5 md:min-w-64 overflow-y-auto p-6 border-r border-border bg-surface-variant text-sm text-muted-foreground leading-7 max-h-48 md:max-h-none">
-          <pre className="whitespace-pre-wrap font-sans">{problem.description.trim()}</pre>
+        {/* Description — left column */}
+        <div className="md:w-72 lg:w-80 shrink-0 overflow-y-auto border-b md:border-b-0 md:border-r border-border p-6 bg-muted/20 max-h-48 md:max-h-none">
+          <pre className="whitespace-pre-wrap font-sans text-sm text-muted-foreground leading-relaxed">{problem.description.trim()}</pre>
         </div>
 
-        {/* Editor + Results */}
-        <div className="flex-1 flex flex-col overflow-hidden min-h-0">
-          <div className="flex-1 overflow-hidden min-h-0">
-            <Editor value={code} onChange={setCode} onRun={handleRun} />
-          </div>
-          <div className="border-t border-border shrink-0 overflow-y-auto" style={{ height: '42%', minHeight: '200px' }}>
-            <TestResults result={result} isRunning={isRunning} complexity={complexity} />
-          </div>
+        {/* Editor — center column, fills remaining space */}
+        <div className="flex-1 overflow-hidden min-h-0">
+          <Editor
+            value={code}
+            onChange={setCode}
+            onRun={handleRun}
+            theme={resolvedTheme === 'dark' ? 'vs-dark' : 'vs'}
+          />
+        </div>
+
+        {/* Results — right column */}
+        <div className="md:w-80 lg:w-96 shrink-0 border-t md:border-t-0 md:border-l border-border overflow-y-auto">
+          <TestResults
+            result={result}
+            isRunning={isRunning}
+            complexity={complexity}
+            isAnalyzing={isAnalyzing}
+          />
         </div>
       </div>
 
       <HintChat slug={problem.slug} code={code} />
 
-      {/* Snackbar toast */}
-      {toast && (
-        <div
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-surface text-foreground px-5 py-3 rounded-full text-sm z-50 font-medium"
-          style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.6)' }}
-        >
-          {toast}
-        </div>
-      )}
+      {/* Toast — always in DOM, CSS opacity transition */}
+      <div
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-card border shadow-lg text-foreground px-5 py-3 rounded-full text-sm z-50 font-medium transition-all duration-300 ${
+          toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+        }`}
+      >
+        {toast}
+      </div>
     </div>
   )
 }
