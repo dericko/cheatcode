@@ -48,26 +48,23 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
           </SelectContent>
         </Select>
 
-        <span className="ml-auto text-xs text-muted tabular-nums">{filtered.length} problems</span>
+        <span className="ml-auto text-xs text-muted-foreground tabular-nums">{filtered.length} problems</span>
       </div>
 
       {/* Card grid */}
-      <div
-        className="grid grid-cols-1"
-        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}
-      >
+      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
         {filtered.map(p => (
           <Link key={p.slug} href={`/problems/${p.slug}`} className="no-underline">
-            <Card className="bg-surface border-border hover:bg-surface-hover transition-colors cursor-pointer h-full shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
-              <CardContent className="p-6 flex flex-col h-full">
-                <p className="text-base font-semibold text-foreground flex-1 mb-4">
+            <Card className="hover:bg-accent/50 transition-colors duration-150 cursor-pointer h-full">
+              <CardContent className="p-5 flex flex-col h-full">
+                <p className="text-sm font-semibold text-foreground flex-1 mb-4 leading-snug">
                   {p.title}
                 </p>
                 <div className="flex items-center justify-between gap-2 mt-auto">
                   <Badge variant={p.difficulty}>{p.difficulty}</Badge>
                   <span className="text-muted-foreground text-xs truncate">{p.topic}</span>
                   {solvedSlugs.has(p.slug)
-                    ? <span className="shrink-0 text-green-400 text-xs font-bold">✓</span>
+                    ? <span className="shrink-0 text-green-500 text-xs font-bold">✓</span>
                     : <span className="shrink-0 w-3" />
                   }
                 </div>
