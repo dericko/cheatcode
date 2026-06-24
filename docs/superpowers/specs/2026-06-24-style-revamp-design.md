@@ -196,9 +196,17 @@ When `isLoading === true` in `HintChat`, render a skeleton bubble in the message
 | `src/components/Timer.tsx` | Token cleanup; transition-colors for warning states |
 | `src/app/problems/[slug]/ProblemClient.tsx` | Loader2 spinner on Run button; toast transition |
 
+## Layout Restructuring (In Scope)
+
+Layout panels and columns may be adjusted wherever the current structure doesn't support a professional, clean design. Goals:
+
+- Problem page: consider a proper 3-panel layout — description left, editor center, results right — rather than stacking results below the editor, which wastes vertical space and buries feedback
+- Home page: header with nav + theme toggle, hero progress section, filter + problem grid with comfortable whitespace
+- HintChat: right-side overlay with the panel tab always visible
+- All panels: consistent border treatment, no raw box-shadows
+
 ## Out of Scope
 
-- Layout restructuring (panels, columns, breakpoints stay the same)
 - New features or data model changes
 - Font change (Geist stays)
 - Accessibility audit (not part of this revamp)
