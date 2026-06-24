@@ -21,13 +21,13 @@ export default async function HomePage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-6 h-12 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-8 h-12 flex items-center justify-between">
           <span className="font-medium text-sm tracking-tight">Cheatcode</span>
           <ThemeToggle />
         </div>
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-10">
+      <main className="flex-1 max-w-5xl mx-auto w-full px-8 py-10">
         {/* Progress hero */}
         <div className="mb-10">
           <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium mb-2">Progress</p>

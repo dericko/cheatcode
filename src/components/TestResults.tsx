@@ -58,11 +58,8 @@ export default function TestResults({ result, isRunning, complexity, isAnalyzing
   return (
     <div className="text-sm flex flex-col">
       {/* Results header */}
-      <div className={`flex items-center justify-between px-4 py-2.5 border-b shrink-0 border-l-2 ${allPassed ? 'border-l-green-500' : 'border-l-red-500'}`}>
-        <Badge className={allPassed
-          ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
-          : 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'
-        }>
+      <div className={`flex items-center justify-between px-4 py-2.5 border-b shrink-0 border-l-2 ${allPassed ? 'border-l-primary' : 'border-l-destructive'}`}>
+        <Badge variant={allPassed ? 'easy' : 'hard'}>
           {passed}/{total} passed
         </Badge>
         <Button variant="outline" size="sm" onClick={toggleMode}>
@@ -82,7 +79,7 @@ export default function TestResults({ result, isRunning, complexity, isAnalyzing
                   <span className={r.passed ? 'text-muted-foreground' : 'text-foreground'}>{r.description}</span>
                 </div>
                 {!r.passed && (
-                  <div className="mt-2 ml-4 bg-muted rounded-md p-2.5 font-mono text-xs space-y-1">
+                  <div className="mt-2 ml-4 bg-muted p-2.5 font-mono text-xs space-y-1">
                     {r.error ? (
                       <div className="text-red-600 dark:text-red-400">Error: {r.error}</div>
                     ) : (
@@ -100,7 +97,7 @@ export default function TestResults({ result, isRunning, complexity, isAnalyzing
           {result.consoleOutput.length > 0 && (
             <div className="px-4 py-3 border-t">
               <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Console</div>
-              <div className="bg-muted rounded-md p-2.5 space-y-0.5">
+              <div className="bg-muted p-2.5 space-y-0.5">
                 {result.consoleOutput.map((line, i) => (
                   <div key={i} className="font-mono text-xs text-amber-600 dark:text-yellow-300">{line}</div>
                 ))}
@@ -127,10 +124,7 @@ export default function TestResults({ result, isRunning, complexity, isAnalyzing
         <div className="px-4 py-3 border-t">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Complexity</span>
-            <Badge className={complexity.passesTarget
-              ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800'
-              : 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800'
-            }>
+            <Badge variant={complexity.passesTarget ? 'easy' : 'hard'}>
               {complexity.passesTarget ? 'optimal' : 'suboptimal'}
             </Badge>
           </div>
@@ -140,7 +134,7 @@ export default function TestResults({ result, isRunning, complexity, isAnalyzing
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">{complexity.explanation}</p>
           {complexity.hint && (
-            <div className="mt-2 px-3 py-2 bg-muted rounded-lg text-xs text-muted-foreground leading-relaxed border">
+            <div className="mt-2 px-3 py-2 bg-muted text-xs text-muted-foreground leading-relaxed border">
               {complexity.hint}
             </div>
           )}
