@@ -29,7 +29,7 @@ ${problem.targetComplexity ? `- The optimal solution runs in ${problem.targetCom
 
   try {
     const { text } = await generateText({
-      model: google('gemini-1.5-flash'),
+      model: google('gemini-2.5-flash'),
       system,
       messages,
     })
