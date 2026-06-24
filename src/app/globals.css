@@ -2,69 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Design tokens ─────────────────────────────────────── */
+/* ── Light mode tokens (shadcn zinc defaults) ─────────────── */
 :root {
-  color-scheme: dark;
-
-  /* Core palette */
-  --background:         #0f0f13;
-  --surface:            #1a1a27;
-  --surface-hover:      #22223a;
-  --surface-variant:    #1e1e30;
-  --border:             rgba(255, 255, 255, 0.07);
-  --primary:            #6366f1;
-  --primary-hover:      #818cf8;
-  --primary-foreground: #ffffff;
-  --foreground:         #e8e8f0;
-  --muted-foreground:   #8b8ba7;
-  --muted:              #52526b;
-
-  /* shadcn variable aliases (components reference these names) */
-  --card:                  var(--surface);
-  --card-foreground:       var(--foreground);
-  --popover:               var(--surface);
-  --popover-foreground:    var(--foreground);
-  --secondary:             var(--surface-variant);
-  --secondary-foreground:  var(--foreground);
-  --accent:                var(--surface-hover);
-  --accent-foreground:     var(--foreground);
-  --destructive:           #ef4444;
-  --destructive-foreground: #ffffff;
-  --input:                 var(--surface-variant);
-  --ring:                  var(--primary);
-  --radius:                0.5rem;
+  --background: #ffffff;
+  --foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #18181b;
+  --radius: 0.5rem;
 }
 
-/* ─── Tailwind v4 theme mapping ─────────────────────────── */
-/* Maps CSS vars into utility classes: bg-background, text-foreground, etc. */
+/* ── Dark mode tokens (shadcn zinc defaults) ──────────────── */
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --popover: #09090b;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #d4d4d8;
+}
+
+/* ── Tailwind v4 theme mapping ────────────────────────────── */
 @theme {
-  --color-background:          var(--background);
-  --color-surface:             var(--surface);
-  --color-surface-hover:       var(--surface-hover);
-  --color-surface-variant:     var(--surface-variant);
-  --color-border:              var(--border);
-  --color-primary:             var(--primary);
-  --color-primary-hover:       var(--primary-hover);
-  --color-primary-foreground:  var(--primary-foreground);
-  --color-foreground:          var(--foreground);
-  --color-muted-foreground:    var(--muted-foreground);
-  --color-muted:               var(--muted);
-  --color-card:                var(--card);
-  --color-card-foreground:     var(--card-foreground);
-  --color-ring:                var(--ring);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
-/* ─── Base styles ────────────────────────────────────────── */
+/* ── Base styles ──────────────────────────────────────────── */
 @layer base {
+  * {
+    border-color: var(--border);
+  }
   html {
     scroll-behavior: smooth;
   }
   body {
     background-color: var(--background);
     color: var(--foreground);
-  }
-  a {
-    text-decoration: none;
   }
   ::-webkit-scrollbar {
     width: 5px;
@@ -74,7 +95,7 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: var(--muted);
+    background-color: var(--border);
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
