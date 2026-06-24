@@ -2,17 +2,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import type { Problem, Difficulty, Topic } from '@/types/problem'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const TOPICS: Topic[] = ['arrays', 'strings', 'linked-lists', 'trees', 'graphs', 'dynamic-programming', 'misc']
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard']
-
-const DIFF_CHIP: Record<Difficulty, string> = {
-  easy:   'bg-green-500/15 text-green-400',
-  medium: 'bg-yellow-500/15 text-yellow-400',
-  hard:   'bg-red-500/15 text-red-400',
-}
-
-const SELECT_CHEVRON = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`
 
 interface ProblemListProps {
   problems: Problem[]
@@ -29,51 +24,55 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
     (diffFilter === 'all' || p.difficulty === diffFilter)
   )
 
-  const selectClass = "bg-[#1e1e2e] text-gray-300 pl-3 pr-8 py-2 rounded-lg text-sm border border-white/10 hover:border-white/25 focus:outline-none focus:border-indigo-500/60 transition-colors cursor-pointer appearance-none"
-  const selectStyle = { backgroundImage: SELECT_CHEVRON, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }
-
   return (
-    <div className="mx-4 sm:mx-6">
+    <div>
       {/* Filters */}
       <div className="flex gap-2 mb-6 flex-wrap items-center">
-        <select value={topicFilter} onChange={e => setTopicFilter(e.target.value as Topic | 'all')} className={selectClass} style={selectStyle}>
-          <option value="all">All Topics</option>
-          {TOPICS.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
-        <select value={diffFilter} onChange={e => setDiffFilter(e.target.value as Difficulty | 'all')} className={selectClass} style={selectStyle}>
-          <option value="all">All Difficulties</option>
-          {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
-        </select>
-        <span className="ml-auto text-xs text-gray-600 tabular-nums">{filtered.length} problems</span>
+        <Select value={topicFilter} onValueChange={(v) => setTopicFilter(v as Topic | 'all')}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder="All Topics" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Topics</SelectItem>
+            {TOPICS.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+          </SelectContent>
+        </Select>
+
+        <Select value={diffFilter} onValueChange={(v) => setDiffFilter(v as Difficulty | 'all')}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder="All Difficulties" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Difficulties</SelectItem>
+            {DIFFICULTIES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+          </SelectContent>
+        </Select>
+
+        <span className="ml-auto text-xs text-muted tabular-nums">{filtered.length} problems</span>
       </div>
 
-      {/* Card grid: 1 col on tiny screens, 2+ cols from 400px up */}
-      <div className="grid grid-cols-1"
-        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '2rem' }}
+      {/* Card grid */}
+      <div
+        className="grid grid-cols-1"
+        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}
       >
         {filtered.map(p => (
-          <Link
-            key={p.slug}
-            href={`/problems/${p.slug}`}
-            className="no-underline flex flex-col bg-[#1e1e2e] rounded-2xl p-8 hover:bg-[#252538] transition-colors"
-            style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.4)', textDecoration: 'none' }}
-          >
-            {/* Title */}
-            <p className="text-xl font-semibold text-gray-100 min-h-[4rem] flex items-center" style={{ wordBreak: 'break-word' }}>
-              {p.title}
-            </p>
-
-            {/* Footer row: difficulty left, topic right, solved far-right */}
-            <div className="flex items-center justify-between gap-2 mt-auto">
-              <span className={`font-semibold px-2.5 py-1 rounded-md ${DIFF_CHIP[p.difficulty]}`}>
-                {p.difficulty}
-              </span>
-              <span className="text-gray-500 truncate">{p.topic}</span>
-              {solvedSlugs.has(p.slug)
-                ? <span className="shrink-0 text-green-400 text-xs font-bold">✓</span>
-                : <span className="shrink-0 w-3" />
-              }
-            </div>
+          <Link key={p.slug} href={`/problems/${p.slug}`} className="no-underline">
+            <Card className="bg-surface border-border hover:bg-surface-hover transition-colors cursor-pointer h-full shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+              <CardContent className="p-6 flex flex-col h-full">
+                <p className="text-base font-semibold text-foreground flex-1 mb-4">
+                  {p.title}
+                </p>
+                <div className="flex items-center justify-between gap-2 mt-auto">
+                  <Badge variant={p.difficulty}>{p.difficulty}</Badge>
+                  <span className="text-muted-foreground text-xs truncate">{p.topic}</span>
+                  {solvedSlugs.has(p.slug)
+                    ? <span className="shrink-0 text-green-400 text-xs font-bold">✓</span>
+                    : <span className="shrink-0 w-3" />
+                  }
+                </div>
+              </CardContent>
+            </Card>
           </Link>
         ))}
       </div>
