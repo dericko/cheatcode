@@ -12,6 +12,7 @@ Example:
   Input: nums = [10,9,2,5,3,7,101,18]
   Output: 4  ([2,3,7,101])`,
   starterCode: `function lengthOfLIS(nums: number[]): number {\n\n}`,
+  targetComplexity: 'O(n log n)',
   testCases: [
     { input: [[10,9,2,5,3,7,101,18]], expected: 4, description: '[2,3,7,101]' },
     { input: [[0,1,0,3,2,3]], expected: 4, description: '[0,1,2,3]' },

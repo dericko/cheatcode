@@ -13,6 +13,7 @@ Example:
   Output: 6
   Explanation: [4,-1,2,1] has the largest sum = 6`,
   starterCode: `function maxSubArray(nums: number[]): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[-2,1,-3,4,-1,2,1,-5,4]], expected: 6, description: 'classic Kadane' },
     { input: [[1]], expected: 1, description: 'single element' },

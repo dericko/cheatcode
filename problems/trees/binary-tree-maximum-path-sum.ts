@@ -15,6 +15,7 @@ Example:
   Input: [-10,9,20,null,null,15,7]
   Output: 42  (15 → 20 → 7)`,
   starterCode: `function maxPathSum(root: TreeNode | null): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,3]], expected: 6, description: '2+1+3' },
     { input: [[-10,9,20,null,null,15,7]], expected: 42, description: '15+20+7' },

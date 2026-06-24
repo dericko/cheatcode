@@ -12,6 +12,7 @@ Example:
   Input: strs = ["flower","flow","flight"]
   Output: "fl"`,
   starterCode: `function longestCommonPrefix(strs: string[]): string {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [['flower','flow','flight']], expected: 'fl', description: 'standard case' },
     { input: [['dog','racecar','car']], expected: '', description: 'no common prefix' },

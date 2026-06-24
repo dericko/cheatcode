@@ -13,6 +13,7 @@ Example:
   Input: strs = ["eat","tea","tan","ate","nat","bat"]
   Output: [["bat"],["nat","tan"],["ate","eat","tea"]]`,
   starterCode: `function groupAnagrams(strs: string[]): string[][] {\n\n}`,
+  targetComplexity: 'O(n log n)',
   testCases: [
     { input: [['eat','tea','tan','ate','nat','bat']], expected: [['ate','eat','tea'],['bat'],['nat','tan']], description: 'standard grouping' },
     { input: [['']], expected: [['']], description: 'empty string' },

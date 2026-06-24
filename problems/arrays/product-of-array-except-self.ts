@@ -12,6 +12,7 @@ Example:
   Input: nums = [1,2,3,4]
   Output: [24,12,8,6]`,
   starterCode: `function productExceptSelf(nums: number[]): number[] {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,3,4]], expected: [24,12,8,6], description: 'standard case' },
     { input: [[-1,1,0,-3,3]], expected: [0,0,9,0,0], description: 'contains zero' },

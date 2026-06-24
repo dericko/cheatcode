@@ -12,6 +12,7 @@ Example:
   Input: s = "abcabcbb"
   Output: 3  ("abc")`,
   starterCode: `function lengthOfLongestSubstring(s: string): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: ['abcabcbb'], expected: 3, description: '"abc"' },
     { input: ['bbbbb'], expected: 1, description: 'all same' },

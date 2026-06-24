@@ -15,6 +15,7 @@ Example:
   Output: [0,1]
   Explanation: nums[0] + nums[1] = 2 + 7 = 9`,
   starterCode: `function twoSum(nums: number[], target: number): number[] {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[2,7,11,15], 9], expected: [0,1], description: 'basic case' },
     { input: [[3,2,4], 6], expected: [1,2], description: 'non-sequential indices' },

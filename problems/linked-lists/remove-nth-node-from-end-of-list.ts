@@ -15,6 +15,7 @@ Example:
   Input: head = [1,2,3,4,5], n = 2
   Output: [1,2,3,5]`,
   starterCode: `function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,3,4,5], 2], expected: [1,2,3,5], description: 'remove 2nd from end' },
     { input: [[1], 1], expected: [], description: 'remove only node' },

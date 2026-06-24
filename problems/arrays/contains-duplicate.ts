@@ -12,6 +12,7 @@ Example:
   Input: nums = [1,2,3,1]
   Output: true`,
   starterCode: `function containsDuplicate(nums: number[]): boolean {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,3,1]], expected: true, description: 'has duplicate' },
     { input: [[1,2,3,4]], expected: false, description: 'all unique' },

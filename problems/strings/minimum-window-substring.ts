@@ -12,6 +12,7 @@ Example:
   Input: s = "ADOBECODEBANC", t = "ABC"
   Output: "BANC"`,
   starterCode: `function minWindow(s: string, t: string): string {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: ['ADOBECODEBANC', 'ABC'], expected: 'BANC', description: 'standard case' },
     { input: ['a', 'a'], expected: 'a', description: 'exact match' },

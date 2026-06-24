@@ -25,4 +25,5 @@ export interface Problem {
   setupCode?: string
   testCallCode?: string
   testCases: TestCase[]
+  targetComplexity?: string
 }

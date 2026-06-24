@@ -12,6 +12,7 @@ Example:
   Input: s = "A man, a plan, a canal: Panama"
   Output: true`,
   starterCode: `function isPalindrome(s: string): boolean {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: ['A man, a plan, a canal: Panama'], expected: true, description: 'classic with punctuation' },
     { input: ['race a car'], expected: false, description: 'not a palindrome' },

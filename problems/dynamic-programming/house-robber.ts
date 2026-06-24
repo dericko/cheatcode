@@ -12,6 +12,7 @@ Example:
   Input: nums = [1,2,3,1]
   Output: 4  (rob house 0 + house 2)`,
   starterCode: `function rob(nums: number[]): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,3,1]], expected: 4, description: 'alternating' },
     { input: [[2,7,9,3,1]], expected: 12, description: '2+9+1=12' },

@@ -33,10 +33,10 @@ export default async function HomePage() {
             <h1 className="text-3xl font-light text-white">
               {solvedCount} <span className="text-gray-500 text-xl">/ {problems.length}</span>
             </h1>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 font-medium border border-green-500/20">{easy} easy</span>
-              <span className="px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-400 font-medium border border-yellow-500/20">{medium} medium</span>
-              <span className="px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 font-medium border border-red-500/20">{hard} hard</span>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 bg-green-500/10 text-green-400 font-medium border border-green-500/20">{easy} easy</span>
+              <span className="px-2.5 py-1 bg-yellow-500/10 text-yellow-400 font-medium border border-yellow-500/20">{medium} medium</span>
+              <span className="px-2.5 py-1 bg-red-500/10 text-red-400 font-medium border border-red-500/20">{hard} hard</span>
             </div>
           </div>
           {/* Material linear progress */}

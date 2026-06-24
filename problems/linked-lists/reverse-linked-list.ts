@@ -17,6 +17,7 @@ Example:
   Input: head = [1,2,3,4,5]
   Output: [5,4,3,2,1]`,
   starterCode: `function reverseList(head: ListNode | null): ListNode | null {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,3,4,5]], expected: [5,4,3,2,1], description: '5-node list' },
     { input: [[1,2]], expected: [2,1], description: '2-node list' },

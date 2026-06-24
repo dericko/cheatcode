@@ -15,6 +15,7 @@ Example:
   Input: [3,9,20,null,null,15,7]
   Output: [[3],[9,20],[15,7]]`,
   starterCode: `function levelOrder(root: TreeNode | null): number[][] {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[3,9,20,null,null,15,7]], expected: [[3],[9,20],[15,7]], description: 'standard BFS' },
     { input: [[1]], expected: [[1]], description: 'single node' },

@@ -15,6 +15,7 @@ Example:
   Input: [2,1,3]  →  Output: true
   Input: [5,1,4,null,null,3,6]  →  Output: false`,
   starterCode: `function isValidBST(root: TreeNode | null): boolean {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[2,1,3]], expected: true, description: 'valid BST' },
     { input: [[5,1,4,null,null,3,6]], expected: false, description: 'invalid — right subtree has 4 < 5' },

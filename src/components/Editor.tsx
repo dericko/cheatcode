@@ -1,12 +1,20 @@
 'use client'
-import MonacoEditor from '@monaco-editor/react'
+import MonacoEditor, { type OnMount } from '@monaco-editor/react'
+import { KeyMod, KeyCode } from 'monaco-editor'
 
 interface EditorProps {
   value: string
   onChange: (value: string) => void
+  onRun?: () => void
 }
 
-export default function Editor({ value, onChange }: EditorProps) {
+export default function Editor({ value, onChange, onRun }: EditorProps) {
+  const handleMount: OnMount = (editor) => {
+    editor.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, () => {
+      onRun?.()
+    })
+  }
+
   return (
     <MonacoEditor
       height="100%"
@@ -14,6 +22,7 @@ export default function Editor({ value, onChange }: EditorProps) {
       value={value}
       onChange={(val) => onChange(val ?? '')}
       theme="vs-dark"
+      onMount={handleMount}
       options={{
         minimap: { enabled: false },
         fontSize: 14,

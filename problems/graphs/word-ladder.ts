@@ -12,6 +12,7 @@ Example:
   Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
   Output: 5  (hit→hot→dot→dog→cog)`,
   starterCode: `function ladderLength(beginWord: string, endWord: string, wordList: string[]): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: ['hit', 'cog', ['hot','dot','dog','lot','log','cog']], expected: 5, description: 'hit→hot→dot→dog→cog' },
     { input: ['hit', 'cog', ['hot','dot','dog','lot','log']], expected: 0, description: 'endWord not in list' },

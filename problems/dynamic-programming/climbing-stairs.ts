@@ -12,6 +12,7 @@ Example:
   Input: n = 3
   Output: 3  (1+1+1, 1+2, 2+1)`,
   starterCode: `function climbStairs(n: number): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [2], expected: 2, description: '2 stairs — 2 ways' },
     { input: [3], expected: 3, description: '3 stairs — 3 ways' },

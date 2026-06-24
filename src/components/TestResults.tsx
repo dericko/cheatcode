@@ -1,13 +1,14 @@
 'use client'
 import { useState, useEffect } from 'react'
-import type { RunResult } from '@/types/runner'
+import type { RunResult, ComplexityResult } from '@/types/runner'
 
 interface TestResultsProps {
   result: RunResult | null
   isRunning: boolean
+  complexity?: ComplexityResult | null
 }
 
-export default function TestResults({ result, isRunning }: TestResultsProps) {
+export default function TestResults({ result, isRunning, complexity }: TestResultsProps) {
   const [mode, setMode] = useState<'verbose' | 'summary'>('verbose')
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function TestResults({ result, isRunning }: TestResultsProps) {
   const allPassed = passed === total
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-900 text-sm flex flex-col">
+    <div className="bg-gray-900 text-sm flex flex-col">
       {/* Results header */}
       <div className={`flex items-center justify-between px-4 py-2 border-b border-gray-800 shrink-0 border-l-2 ${allPassed ? 'border-l-emerald-500' : 'border-l-red-500'}`}>
         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${allPassed ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}>
@@ -91,6 +92,28 @@ export default function TestResults({ result, isRunning }: TestResultsProps) {
                   <div key={i} className="font-mono text-xs text-yellow-300">{line}</div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Complexity card — appears when analysis resolves */}
+          {complexity && (
+            <div className="px-4 py-3 border-t border-gray-800">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Complexity</span>
+                <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${complexity.passesTarget ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}>
+                  {complexity.passesTarget ? 'optimal' : 'suboptimal'}
+                </span>
+              </div>
+              <div className="flex gap-3 text-xs text-gray-400 mb-1.5">
+                <span>Time: <span className="text-gray-200 font-mono">{complexity.timeComplexity}</span></span>
+                <span>Space: <span className="text-gray-200 font-mono">{complexity.spaceComplexity}</span></span>
+              </div>
+              <p className="text-xs text-gray-500 leading-relaxed">{complexity.explanation}</p>
+              {complexity.hint && (
+                <div className="mt-2 px-3 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-xs text-indigo-300 leading-relaxed">
+                  {complexity.hint}
+                </div>
+              )}
             </div>
           )}
         </div>

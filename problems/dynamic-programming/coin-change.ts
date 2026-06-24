@@ -12,6 +12,7 @@ Example:
   Input: coins = [1,2,5], amount = 11
   Output: 3  (5+5+1)`,
   starterCode: `function coinChange(coins: number[], amount: number): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,5], 11], expected: 3, description: '5+5+1' },
     { input: [[2], 3], expected: -1, description: 'impossible' },

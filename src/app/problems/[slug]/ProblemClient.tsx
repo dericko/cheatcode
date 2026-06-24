@@ -1,10 +1,11 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Timer from '@/components/Timer'
 import TestResults from '@/components/TestResults'
+import HintChat from '@/components/HintChat'
 import type { Problem } from '@/types/problem'
-import type { RunResult } from '@/types/runner'
+import type { RunResult, ComplexityResult } from '@/types/runner'
 
 const Editor = dynamic(() => import('@/components/Editor'), { ssr: false })
 
@@ -14,13 +15,34 @@ const DIFF_CHIP: Record<string, string> = {
   hard:   'bg-red-500/10 text-red-400 border border-red-500/20',
 }
 
+const STORAGE_KEY = (slug: string) => `code:${slug}`
+
 export default function ProblemClient({ problem }: { problem: Problem }) {
-  const [code, setCode] = useState(problem.starterCode)
+  const [code, setCode] = useState(() => {
+    if (typeof window === 'undefined') return problem.starterCode
+    return localStorage.getItem(STORAGE_KEY(problem.slug)) ?? problem.starterCode
+  })
   const [result, setResult] = useState<RunResult | null>(null)
+  const [complexity, setComplexity] = useState<ComplexityResult | null>(null)
   const [isRunning, setIsRunning] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const elapsedRef = useRef(0)
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY(problem.slug), code)
+  }, [code, problem.slug])
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault()
+        handleRun()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [code])
 
   const showToast = (msg: string) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
@@ -30,12 +52,25 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
 
   const handleRun = async () => {
     setIsRunning(true)
+    setComplexity(null)
     try {
-      const res = await fetch('/api/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: problem.slug, code }),
-      })
+      // Run tests and complexity analysis in parallel
+      const [res] = await Promise.all([
+        fetch('/api/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: problem.slug, code }),
+        }),
+        // Fire-and-forget complexity analysis; updates state when done
+        fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: problem.slug, code }),
+        }).then(r => r.ok ? r.json() : null).then(data => {
+          if (data) setComplexity(data)
+        }).catch(() => {}),
+      ])
+
       if (!res.ok) {
         showToast('Error connecting to runner')
         return
@@ -101,14 +136,16 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
 
         {/* Editor + Results */}
         <div className="flex-1 flex flex-col overflow-hidden min-h-0">
-          <div className="flex-1 overflow-hidden">
-            <Editor value={code} onChange={setCode} />
+          <div className="flex-1 overflow-hidden min-h-0">
+            <Editor value={code} onChange={setCode} onRun={handleRun} />
           </div>
-          <div className="h-56 border-t border-white/5 shrink-0 overflow-hidden">
-            <TestResults result={result} isRunning={isRunning} />
+          <div className="border-t border-white/5 shrink-0 overflow-y-auto" style={{ height: '42%', minHeight: '200px' }}>
+            <TestResults result={result} isRunning={isRunning} complexity={complexity} />
           </div>
         </div>
       </div>
+
+      <HintChat slug={problem.slug} code={code} />
 
       {/* Material snackbar-style toast */}
       {toast && (

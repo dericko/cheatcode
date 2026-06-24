@@ -15,6 +15,7 @@ Example:
   Input: lists = [[1,4,5],[1,3,4],[2,6]]
   Output: [1,1,2,3,4,4,5,6]`,
   starterCode: `function mergeKLists(lists: Array<ListNode | null>): ListNode | null {\n\n}`,
+  targetComplexity: 'O(n log n)',
   testCases: [
     { input: [[[1,4,5],[1,3,4],[2,6]]], expected: [1,1,2,3,4,4,5,6], description: '3 lists' },
     { input: [[[]]], expected: [], description: 'one empty list' },

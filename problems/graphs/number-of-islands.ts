@@ -12,6 +12,7 @@ Example:
   Input: [["1","1","0"],["0","1","0"],["0","0","1"]]
   Output: 2`,
   starterCode: `function numIslands(grid: string[][]): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[['1','1','1','1','0'],['1','1','0','1','0'],['1','1','0','0','0'],['0','0','0','0','0']]], expected: 1, description: 'one large island' },
     { input: [[['1','1','0','0','0'],['1','1','0','0','0'],['0','0','1','0','0'],['0','0','0','1','1']]], expected: 3, description: 'three islands' },

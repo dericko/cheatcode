@@ -17,6 +17,7 @@ Example:
   Input: [3,9,20,null,null,15,7]
   Output: 3`,
   starterCode: `function maxDepth(root: TreeNode | null): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[3,9,20,null,null,15,7]], expected: 3, description: 'depth-3 tree' },
     { input: [[1,null,2]], expected: 2, description: 'right-skewed' },

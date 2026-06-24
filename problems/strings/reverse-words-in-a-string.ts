@@ -12,6 +12,7 @@ Example:
   Input: s = "the sky is blue"
   Output: "blue is sky the"`,
   starterCode: `function reverseWords(s: string): string {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: ['the sky is blue'], expected: 'blue is sky the', description: 'standard case' },
     { input: ['  hello world  '], expected: 'world hello', description: 'trim spaces' },

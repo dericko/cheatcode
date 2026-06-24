@@ -16,6 +16,7 @@ Input format: \`[values, pos]\` where \`pos\` is the tail's connection index (-1
 Example:
   Input: [3,2,0,-4], pos=1  →  Output: true`,
   starterCode: `function hasCycle(head: ListNode | null): boolean {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[3,2,0,-4], 1], expected: true, description: 'cycle at index 1' },
     { input: [[1,2], 0], expected: true, description: 'cycle at head' },

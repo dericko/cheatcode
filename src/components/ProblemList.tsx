@@ -48,30 +48,31 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
       </div>
 
       {/* Card grid: 1 col on tiny screens, 2+ cols from 400px up */}
-      <div className="grid grid-cols-1 gap-4"
-        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}
+      <div className="grid grid-cols-1"
+        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '2rem' }}
       >
         {filtered.map(p => (
           <Link
             key={p.slug}
             href={`/problems/${p.slug}`}
-            className="no-underline flex flex-col bg-[#1e1e2e] rounded-xl p-4 hover:bg-[#252538] transition-colors"
+            className="no-underline flex flex-col bg-[#1e1e2e] rounded-2xl p-8 hover:bg-[#252538] transition-colors"
             style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.4)', textDecoration: 'none' }}
           >
-            {/* Title — fixed min-height so short titles don't collapse cards */}
-            <p className="text-sm font-medium text-gray-100 leading-snug mb-4 min-h-[2.5rem]">
+            {/* Title */}
+            <p className="text-xl font-semibold text-gray-100 min-h-[4rem] flex items-center" style={{ wordBreak: 'break-word' }}>
               {p.title}
             </p>
 
-            {/* Footer row: difficulty chip left, topic center, solved right */}
-            <div className="flex items-center gap-2 mt-auto">
-              <span className={`shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-md ${DIFF_CHIP[p.difficulty]}`}>
+            {/* Footer row: difficulty left, topic right, solved far-right */}
+            <div className="flex items-center justify-between gap-2 mt-auto">
+              <span className={`font-semibold px-2.5 py-1 rounded-md ${DIFF_CHIP[p.difficulty]}`}>
                 {p.difficulty}
               </span>
-              <span className="text-[11px] text-gray-500 truncate flex-1">{p.topic}</span>
-              {solvedSlugs.has(p.slug) && (
-                <span className="shrink-0 text-green-400 text-xs font-bold">✓</span>
-              )}
+              <span className="text-gray-500 truncate">{p.topic}</span>
+              {solvedSlugs.has(p.slug)
+                ? <span className="shrink-0 text-green-400 text-xs font-bold">✓</span>
+                : <span className="shrink-0 w-3" />
+              }
             </div>
           </Link>
         ))}

@@ -15,6 +15,7 @@ Example:
   Input: list1 = [1,2,4], list2 = [1,3,4]
   Output: [1,1,2,3,4,4]`,
   starterCode: `function mergeTwoLists(list1: ListNode | null, list2: ListNode | null): ListNode | null {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,4],[1,3,4]], expected: [1,1,2,3,4,4], description: 'standard merge' },
     { input: [[],[]], expected: [], description: 'both empty' },

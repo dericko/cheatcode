@@ -12,6 +12,7 @@ Example:
   Input: height = [1,8,6,2,5,4,8,3,7]
   Output: 49`,
   starterCode: `function maxArea(height: number[]): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,8,6,2,5,4,8,3,7]], expected: 49, description: 'standard case' },
     { input: [[1,1]], expected: 1, description: 'two equal heights' },

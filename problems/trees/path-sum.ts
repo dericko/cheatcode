@@ -15,6 +15,7 @@ Example:
   Input: root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
   Output: true`,
   starterCode: `function hasPathSum(root: TreeNode | null, targetSum: number): boolean {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[5,4,8,11,null,13,4,7,2,null,null,null,1], 22], expected: true, description: 'path exists' },
     { input: [[1,2,3], 5], expected: false, description: 'no matching path' },

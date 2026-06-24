@@ -13,6 +13,7 @@ Example:
   Output: 5
   Explanation: Buy day 2 (price=1), sell day 5 (price=6), profit = 5`,
   starterCode: `function maxProfit(prices: number[]): number {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[7,1,5,3,6,4]], expected: 5, description: 'standard case' },
     { input: [[7,6,4,3,1]], expected: 0, description: 'declining prices — no profit' },

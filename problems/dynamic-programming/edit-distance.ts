@@ -12,6 +12,7 @@ Example:
   Input: word1 = "horse", word2 = "ros"
   Output: 3  (horse→rorse→rose→ros)`,
   starterCode: `function minDistance(word1: string, word2: string): number {\n\n}`,
+  targetComplexity: 'O(n²)',
   testCases: [
     { input: ['horse', 'ros'], expected: 3, description: 'horse → ros' },
     { input: ['intention', 'execution'], expected: 5, description: 'intention → execution' },

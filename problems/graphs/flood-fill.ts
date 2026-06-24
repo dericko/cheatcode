@@ -12,6 +12,7 @@ Example:
   Input: image = [[1,1,1],[1,1,0],[1,0,1]], sr=1, sc=1, color=2
   Output: [[2,2,2],[2,2,0],[2,0,1]]`,
   starterCode: `function floodFill(image: number[][], sr: number, sc: number, color: number): number[][] {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[[1,1,1],[1,1,0],[1,0,1]], 1, 1, 2], expected: [[2,2,2],[2,2,0],[2,0,1]], description: 'standard fill' },
     { input: [[[0,0,0],[0,0,0]], 0, 0, 0], expected: [[0,0,0],[0,0,0]], description: 'same color — no change' },

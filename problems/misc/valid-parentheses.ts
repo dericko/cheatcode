@@ -12,6 +12,7 @@ Example:
   Input: s = "()[]{}"
   Output: true`,
   starterCode: `function isValid(s: string): boolean {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: ['()'], expected: true, description: 'simple pair' },
     { input: ['()[]{}'], expected: true, description: 'multiple pairs' },

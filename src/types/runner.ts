@@ -15,6 +15,14 @@ export interface TestCaseResult {
   error?: string
 }
 
+export interface ComplexityResult {
+  timeComplexity: string
+  spaceComplexity: string
+  explanation: string
+  passesTarget: boolean
+  hint: string | null
+}
+
 export interface RunResult {
   results: TestCaseResult[]
   consoleOutput: string[]

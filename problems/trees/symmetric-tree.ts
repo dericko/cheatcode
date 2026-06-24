@@ -15,6 +15,7 @@ Example:
   Input: [1,2,2,3,4,4,3]
   Output: true`,
   starterCode: `function isSymmetric(root: TreeNode | null): boolean {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: [[1,2,2,3,4,4,3]], expected: true, description: 'symmetric' },
     { input: [[1,2,2,null,3,null,3]], expected: false, description: 'not symmetric' },

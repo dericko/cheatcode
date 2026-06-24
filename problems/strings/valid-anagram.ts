@@ -12,6 +12,7 @@ Example:
   Input: s = "anagram", t = "nagaram"
   Output: true`,
   starterCode: `function isAnagram(s: string, t: string): boolean {\n\n}`,
+  targetComplexity: 'O(n)',
   testCases: [
     { input: ['anagram', 'nagaram'], expected: true, description: 'valid anagram' },
     { input: ['rat', 'car'], expected: false, description: 'not an anagram' },

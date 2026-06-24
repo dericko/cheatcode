@@ -13,6 +13,7 @@ Example:
   Input: nums = [-1,0,1,2,-1,-4]
   Output: [[-1,-1,2],[-1,0,1]]`,
   starterCode: `function threeSum(nums: number[]): number[][] {\n\n}`,
+  targetComplexity: 'O(n²)',
   testCases: [
     { input: [[-1,0,1,2,-1,-4]], expected: [[-1,-1,2],[-1,0,1]], description: 'standard case' },
     { input: [[0,1,1]], expected: [], description: 'no triplets' },
