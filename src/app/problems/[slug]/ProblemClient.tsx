@@ -96,17 +96,16 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 bg-background/80 backdrop-blur-sm shrink-0 h-14 gap-2 border-b">
-        <div className="flex items-center gap-3 min-w-0">
-          <Button variant="ghost" size="sm" asChild className="shrink-0">
+      <header className="flex items-center justify-between px-5 bg-background/90 backdrop-blur-sm shrink-0 h-12 gap-2 border-b">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <Button variant="ghost" size="sm" asChild className="shrink-0 text-muted-foreground hover:text-foreground px-0">
             <Link href="/">← Back</Link>
           </Button>
-          <span className="text-foreground/30 shrink-0">|</span>
+          <span className="text-border shrink-0">|</span>
           <h1 className="text-sm font-medium truncate">{problem.title}</h1>
           <Badge variant={problem.difficulty as 'easy' | 'medium' | 'hard'} className="shrink-0">
             {problem.difficulty}
           </Badge>
-          <span className="text-xs text-muted-foreground hidden sm:block shrink-0">{problem.topic}</span>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <Timer onTimeUp={() => showToast("Time's up — keep going!")} elapsedRef={elapsedRef} />
@@ -125,13 +124,13 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
             onClick={handleRun}
             disabled={isRunning}
             size="sm"
+            className="px-5 font-medium"
           >
             {isRunning
               ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Running</>
               : 'Run'
             }
           </Button>
-          <span className="text-xs text-muted-foreground hidden sm:block">⌘↵</span>
           <ThemeToggle />
         </div>
       </header>
@@ -139,7 +138,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
       {/* 3-panel body */}
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         {/* Description — left column */}
-        <div className="md:w-72 lg:w-80 shrink-0 overflow-y-auto border-b md:border-b-0 md:border-r border-border p-6 bg-muted/20 max-h-48 md:max-h-none">
+        <div className="md:w-72 lg:w-80 shrink-0 overflow-y-auto border-b md:border-b-0 md:border-r border-border p-5 max-h-48 md:max-h-none">
           <pre className="whitespace-pre-wrap font-sans text-sm text-muted-foreground leading-relaxed">{problem.description.trim()}</pre>
         </div>
 
@@ -166,11 +165,12 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
 
       <HintChat slug={problem.slug} code={code} />
 
-      {/* Toast — always in DOM, CSS opacity transition */}
+      {/* Toast */}
       <div
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-card border shadow-lg text-foreground px-5 py-3 rounded-full text-sm z-50 font-medium transition-all duration-300 ${
-          toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 text-xs font-medium z-50 transition-all duration-200 ${
+          toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1.5 pointer-events-none'
         }`}
+        style={{ borderRadius: 'var(--radius)' }}
       >
         {toast}
       </div>

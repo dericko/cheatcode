@@ -106,18 +106,18 @@ export default function HintChat({ slug, code }: HintChatProps) {
           )}
           {messages.map((m, i) => (
             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[85%] px-3 py-2 rounded-2xl text-xs leading-relaxed ${
+              <div className={`max-w-[85%] px-3 py-2 text-xs leading-relaxed ${
                 m.role === 'user'
-                  ? 'bg-primary text-primary-foreground rounded-br-sm'
-                  : 'bg-muted text-foreground rounded-bl-sm'
-              }`}>
+                  ? 'bg-foreground text-background'
+                  : 'bg-muted text-foreground border border-border'
+              }`} style={{ borderRadius: 'var(--radius)' }}>
                 {m.content}
               </div>
             </div>
           ))}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-muted px-3 py-3 rounded-2xl rounded-bl-sm space-y-1.5">
+              <div className="bg-muted border border-border px-3 py-3 space-y-1.5" style={{ borderRadius: 'var(--radius)' }}>
                 <Skeleton className="h-3 w-36" />
                 <Skeleton className="h-3 w-24" />
               </div>
@@ -149,8 +149,8 @@ export default function HintChat({ slug, code }: HintChatProps) {
       {/* Fixed tab — right edge, always visible */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="fixed right-0 top-1/2 z-40 bg-card border border-r-0 border-border rounded-l-lg shadow-sm px-2 py-4 flex flex-col items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
-        style={{ transform: 'translateY(-50%)' }}
+        className="fixed right-0 top-1/2 z-40 bg-background border border-r-0 border-border px-2 py-4 flex flex-col items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+        style={{ transform: 'translateY(-50%)', borderRadius: 'var(--radius) 0 0 var(--radius)' }}
         aria-label={open ? 'Close hints' : 'Open hints'}
       >
         <MessageSquare className="h-4 w-4" />
