@@ -60,7 +60,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         body: JSON.stringify({ slug: problem.slug, code }),
       }).then(r => r.ok ? r.json() : null).then(data => {
         if (data && runIdRef.current === runId) setComplexity(data)
-      }).catch(() => {}).finally(() => setIsAnalyzing(false))
+      }).catch(() => { }).finally(() => setIsAnalyzing(false))
     } else {
       setIsAnalyzing(false)
     }
@@ -98,11 +98,10 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
       {/* Header */}
       <header className="flex items-center justify-between px-5 bg-background/90 backdrop-blur-sm shrink-0 h-12 gap-2 border-b">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <Button variant="ghost" size="sm" asChild className="shrink-0 text-muted-foreground hover:text-foreground px-0">
-            <Link href="/">← Back</Link>
-          </Button>
-          <span className="text-border shrink-0">|</span>
+        <Button variant="ghost" size="sm" asChild className="shrink-0 text-muted-foreground hover:text-foreground px-0">
+          <Link href="/">← Back</Link>
+        </Button>
+        <div className="flex-1 flex gap-24 items-center w-full justify-center">
           <h1 className="text-sm font-medium truncate">{problem.title}</h1>
           <Badge variant={problem.difficulty as 'easy' | 'medium' | 'hard'} className="shrink-0">
             {problem.difficulty}
@@ -149,7 +148,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
       </header>
 
       {/* 3-panel body */}
-      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 overflow-hidden">
         {/* Description — left column */}
         <div className="md:w-64 lg:w-72 shrink-0 overflow-y-auto border-b md:border-b-0 md:border-r border-border p-5 max-h-48 md:max-h-none">
           <pre className="whitespace-pre-wrap font-sans text-sm text-muted-foreground leading-relaxed">{problem.description.trim()}</pre>
@@ -165,24 +164,33 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
           />
         </div>
 
-        {/* Results — right column */}
-        <div className="md:w-72 lg:w-80 shrink-0 border-t md:border-t-0 md:border-l border-border overflow-y-auto">
-          <TestResults
-            result={result}
-            isRunning={isRunning}
-            complexity={complexity}
-            isAnalyzing={isAnalyzing}
-          />
-        </div>
       </div>
+      {/* Results — bottom box */}
+      <div className="md:w-72 lg:w-80 shrink-0 border-t md:border-t-0 md:border-l border-border overflow-y-auto">
+        <TestResults
+          result={result}
+          isRunning={isRunning}
+          complexity={complexity}
+          isAnalyzing={isAnalyzing}
+        />
+      </div>
+      <div
+        className="fixed right-0 z-30 flex flex-col bg-card border-l border-border w-72 transition-right duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        style={{
+          // top: '3rem',
+          height: 'calc(100vh - 3rem)',
+          right: hintsOpen ? 0 : '-100vw',
+          boxShadow: hintsOpen ? '-8px 0 24px -4px rgba(0,0,0,0.08)' : 'none',
+        }}
+      >
 
-      <HintChat slug={problem.slug} code={code} open={hintsOpen} onClose={() => setHintsOpen(false)} />
+        <HintChat slug={problem.slug} code={code} open={hintsOpen} onClose={() => setHintsOpen(false)} />
+      </div>
 
       {/* Toast */}
       <div
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 text-xs font-medium z-50 transition-all duration-200 ${
-          toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1.5 pointer-events-none'
-        }`}
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 text-xs font-medium z-50 transition-all duration-200 ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1.5 pointer-events-none'
+          }`}
         style={{ borderRadius: 'var(--radius)' }}
       >
         {toast}

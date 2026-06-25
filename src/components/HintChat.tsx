@@ -66,15 +66,7 @@ export default function HintChat({ slug, code, open, onClose }: HintChatProps) {
   }
 
   return (
-    <div
-      className="fixed right-0 z-30 flex flex-col bg-card border-l border-border w-72 transition-transform duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-      style={{
-        top: '3rem',
-        height: 'calc(100vh - 3rem)',
-        transform: open ? 'translateX(0)' : 'translateX(100%)',
-        boxShadow: open ? '-8px 0 24px -4px rgba(0,0,0,0.08)' : 'none',
-      }}
-    >
+    <div>
       {/* Panel header */}
       <div className="flex items-center justify-between px-4 h-10 border-b shrink-0">
         <span className="text-xs font-medium text-muted-foreground">AI · no spoilers</span>
