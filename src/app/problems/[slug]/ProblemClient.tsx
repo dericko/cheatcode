@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
-import { Loader2 } from 'lucide-react'
+import { Loader2, MessageSquare } from 'lucide-react'
 import Timer from '@/components/Timer'
 import TestResults from '@/components/TestResults'
 import HintChat from '@/components/HintChat'
@@ -29,6 +29,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   const [isRunning, setIsRunning] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [skipAnalysis, setSkipAnalysis] = useState(false)
+  const [hintsOpen, setHintsOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const elapsedRef = useRef(0)
@@ -134,6 +135,15 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
             </Button>
             <span className="text-[11px] text-muted-foreground/50 hidden lg:block">⌘↵</span>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setHintsOpen(o => !o)}
+            className={`gap-1.5 ${hintsOpen ? 'text-foreground' : 'text-muted-foreground'}`}
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            <span className="hidden lg:inline text-xs">Hints</span>
+          </Button>
           <ThemeToggle />
         </div>
       </header>
@@ -166,7 +176,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         </div>
       </div>
 
-      <HintChat slug={problem.slug} code={code} />
+      <HintChat slug={problem.slug} code={code} open={hintsOpen} onClose={() => setHintsOpen(false)} />
 
       {/* Toast */}
       <div
