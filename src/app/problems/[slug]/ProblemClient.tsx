@@ -2,14 +2,24 @@
 import { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { useTheme } from 'next-themes'
-import { Loader2, MessageSquare } from 'lucide-react'
+import { useColorScheme } from '@mui/material/styles'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import Chip from '@mui/material/Chip'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Drawer from '@mui/material/Drawer'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ForumIcon from '@mui/icons-material/Forum'
+import { LoadingButton } from '@mui/lab'
 import Timer from '@/components/Timer'
 import TestResults from '@/components/TestResults'
 import HintChat from '@/components/HintChat'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import type { Problem } from '@/types/problem'
 import type { RunResult, ComplexityResult } from '@/types/runner'
@@ -18,8 +28,14 @@ const Editor = dynamic(() => import('@/components/Editor'), { ssr: false })
 
 const STORAGE_KEY = (slug: string) => `code:${slug}`
 
+const DIFFICULTY_COLOR: Record<string, 'success' | 'warning' | 'error' | 'default'> = {
+  easy: 'success',
+  medium: 'warning',
+  hard: 'error',
+}
+
 export default function ProblemClient({ problem }: { problem: Problem }) {
-  const { resolvedTheme } = useTheme()
+  const { colorScheme } = useColorScheme()
   const [code, setCode] = useState(() => {
     if (typeof window === 'undefined') return problem.starterCode
     return localStorage.getItem(STORAGE_KEY(problem.slug)) ?? problem.starterCode
@@ -38,6 +54,18 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY(problem.slug), code)
   }, [code, problem.slug])
+
+  // Keyboard shortcut: Cmd+Enter to run
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault()
+        handleRun()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [code, isRunning, skipAnalysis, problem.slug])
 
   const showToast = (msg: string) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
@@ -95,106 +123,179 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Header */}
-      <header className="flex items-center justify-between px-5 bg-background/90 backdrop-blur-sm shrink-0 h-12 gap-2 border-b">
-        <Button variant="ghost" size="sm" asChild className="shrink-0 text-muted-foreground hover:text-foreground px-0">
-          <Link href="/">← Back</Link>
-        </Button>
-        <div className="flex-1 flex gap-24 items-center w-full justify-center">
-          <h1 className="text-sm font-medium truncate">{problem.title}</h1>
-          <Badge variant={problem.difficulty as 'easy' | 'medium' | 'hard'} className="shrink-0">
-            {problem.difficulty}
-          </Badge>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <Timer onTimeUp={() => showToast("Time's up — keep going!")} elapsedRef={elapsedRef} />
-          <label className="flex items-center gap-1.5 cursor-pointer select-none">
-            <Checkbox
-              id="feedback-toggle"
-              checked={!skipAnalysis}
-              onCheckedChange={checked => {
-                setSkipAnalysis(!checked)
-                if (!checked) setComplexity(null)
-              }}
-            />
-            <span className="text-xs text-muted-foreground hidden sm:block">feedback</span>
-          </label>
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              onClick={handleRun}
-              disabled={isRunning}
-              size="sm"
-              className="px-5 font-medium"
-            >
-              {isRunning
-                ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Running</>
-                : 'Run'
-              }
-            </Button>
-            <span className="text-[11px] text-muted-foreground/50 hidden lg:block">⌘↵</span>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setHintsOpen(o => !o)}
-            className={`gap-1.5 ${hintsOpen ? 'text-foreground' : 'text-muted-foreground'}`}
+      <AppBar
+        elevation={0}
+        position="static"
+        sx={{ borderBottom: 1, borderColor: 'divider' }}
+        color="default"
+      >
+        <Toolbar variant="dense" sx={{ gap: 1, minHeight: 64 }}>
+          {/* Back button */}
+          <IconButton
+            component={Link}
+            href="/"
+            size="small"
+            edge="start"
+            aria-label="Back to problem list"
           >
-            <MessageSquare className="h-3.5 w-3.5" />
-            <span className="hidden lg:inline text-xs">Hints</span>
-          </Button>
-          <ThemeToggle />
-        </div>
-      </header>
+            <ArrowBackIcon fontSize="small" />
+          </IconButton>
 
-      {/* 3-panel body */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        {/* Description — left column */}
-        <div className="md:w-64 lg:w-72 shrink-0 overflow-y-auto border-b md:border-b-0 md:border-r border-border p-5 max-h-48 md:max-h-none">
-          <pre className="whitespace-pre-wrap font-sans text-sm text-muted-foreground leading-relaxed">{problem.description.trim()}</pre>
-        </div>
+          {/* Center: title + difficulty */}
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+            <Typography variant="body2" sx={{ fontWeight: 'medium' }} noWrap>
+              {problem.title}
+            </Typography>
+            <Chip
+              label={problem.difficulty}
+              size="small"
+              color={DIFFICULTY_COLOR[problem.difficulty] ?? 'default'}
+              sx={{ textTransform: 'capitalize' }}
+            />
+          </Box>
 
-        {/* Editor — center column */}
-        <div className="flex-1 overflow-hidden min-h-0">
-          <Editor
-            value={code}
-            onChange={setCode}
-            onRun={handleRun}
-            theme={resolvedTheme === 'dark' ? 'vs-dark' : 'vs'}
+          {/* Right controls */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+            <Timer onTimeUp={() => showToast("Time's up — keep going!")} elapsedRef={elapsedRef} />
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  size="small"
+                  checked={!skipAnalysis}
+                  onChange={e => {
+                    setSkipAnalysis(!e.target.checked)
+                    if (!e.target.checked) setComplexity(null)
+                  }}
+                />
+              }
+              label={
+                <Typography variant="caption" sx={{ display: { xs: 'none', sm: 'block' } }}>
+                  Feedback
+                </Typography>
+              }
+              sx={{ mr: 0 }}
+            />
+
+            <LoadingButton
+              onClick={handleRun}
+              loading={isRunning}
+              variant="contained"
+              size="small"
+              sx={{ px: 2 }}
+            >
+              Run
+            </LoadingButton>
+
+            <Typography
+              variant="caption"
+              sx={{ color: 'text.disabled', display: { xs: 'none', lg: 'block' } }}
+            >
+              ⌘↵
+            </Typography>
+
+            <IconButton
+              size="small"
+              onClick={() => setHintsOpen(o => !o)}
+              color={hintsOpen ? 'primary' : 'default'}
+              aria-label="Toggle hints"
+            >
+              <ForumIcon fontSize="small" />
+            </IconButton>
+
+            <ThemeToggle />
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {/* Body */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
+        {/* Top row: description + editor */}
+        <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+          {/* Description panel */}
+          <Box
+            sx={{
+              width: 280,
+              flexShrink: 0,
+              borderRight: 1,
+              borderColor: 'divider',
+              overflow: 'auto',
+              p: 2,
+              display: { xs: 'none', md: 'block' },
+            }}
+          >
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              component="pre"
+              sx={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', lineHeight: 1.6 }}
+            >
+              {problem.description.trim()}
+            </Typography>
+          </Box>
+
+          {/* Editor */}
+          <Box sx={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+            <Editor
+              value={code}
+              onChange={setCode}
+              onRun={handleRun}
+              theme={colorScheme === 'dark' ? 'vs-dark' : 'vs'}
+            />
+          </Box>
+        </Box>
+
+        {/* Bottom: test results */}
+        <Box
+          sx={{
+            height: 280,
+            borderTop: 1,
+            borderColor: 'divider',
+            overflow: 'auto',
+            flexShrink: 0,
+          }}
+        >
+          <TestResults
+            result={result}
+            isRunning={isRunning}
+            complexity={complexity}
+            isAnalyzing={isAnalyzing}
           />
-        </div>
+        </Box>
+      </Box>
 
-      </div>
-      {/* Results — bottom box */}
-      <div className="md:w-72 lg:w-80 shrink-0 border-t md:border-t-0 md:border-l border-border overflow-y-auto">
-        <TestResults
-          result={result}
-          isRunning={isRunning}
-          complexity={complexity}
-          isAnalyzing={isAnalyzing}
-        />
-      </div>
-      <div
-        className="fixed right-0 z-30 flex flex-col bg-card border-l border-border w-72 transition-right duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
-        style={{
-          // top: '3rem',
-          height: 'calc(100vh - 3rem)',
-          right: hintsOpen ? 0 : '-100vw',
-          boxShadow: hintsOpen ? '-8px 0 24px -4px rgba(0,0,0,0.08)' : 'none',
+      {/* Hints Drawer */}
+      <Drawer
+        anchor="right"
+        variant="temporary"
+        open={hintsOpen}
+        onClose={() => setHintsOpen(false)}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 320,
+              top: '64px',
+              height: 'calc(100vh - 64px)',
+            },
+          },
         }}
       >
-
         <HintChat slug={problem.slug} code={code} open={hintsOpen} onClose={() => setHintsOpen(false)} />
-      </div>
+      </Drawer>
 
       {/* Toast */}
-      <div
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-4 py-2 text-xs font-medium z-50 transition-all duration-200 ${toast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1.5 pointer-events-none'
-          }`}
-        style={{ borderRadius: 'var(--radius)' }}
+      <Snackbar
+        open={!!toast}
+        autoHideDuration={4000}
+        onClose={() => setToast(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        {toast}
-      </div>
-    </div>
+        <Alert severity="success" onClose={() => setToast(null)} sx={{ width: '100%' }}>
+          {toast}
+        </Alert>
+      </Snackbar>
+    </Box>
   )
 }
