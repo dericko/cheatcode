@@ -46,7 +46,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [skipAnalysis, setSkipAnalysis] = useState(false)
   const [hintsOpen, setHintsOpen] = useState(false)
-  const [toast, setToast] = useState<string | null>(null)
+  const [toast, setToast] = useState<{ message: string; severity: 'success' | 'error' | 'info' } | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const elapsedRef = useRef(0)
   const runIdRef = useRef(0)
@@ -67,9 +67,9 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [code, isRunning, skipAnalysis, problem.slug])
 
-  const showToast = (msg: string) => {
+  const showToast = (msg: string, severity: 'success' | 'error' | 'info' = 'success') => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
-    setToast(msg)
+    setToast({ message: msg, severity })
     toastTimerRef.current = setTimeout(() => setToast(null), 4000)
   }
 
@@ -101,7 +101,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
       })
 
       if (!res.ok) {
-        showToast('Error connecting to runner')
+        showToast('Error connecting to runner', 'error')
         return
       }
       const data: RunResult = await res.json()
@@ -116,7 +116,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         showToast('All tests passed!')
       }
     } catch {
-      showToast('Error connecting to runner')
+      showToast('Error connecting to runner', 'error')
     } finally {
       setIsRunning(false)
     }
@@ -292,8 +292,8 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         onClose={() => setToast(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert severity="success" onClose={() => setToast(null)} sx={{ width: '100%' }}>
-          {toast}
+        <Alert severity={toast?.severity ?? 'success'} onClose={() => setToast(null)} sx={{ width: '100%' }}>
+          {toast?.message}
         </Alert>
       </Snackbar>
     </Box>
