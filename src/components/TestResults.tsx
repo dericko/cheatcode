@@ -1,8 +1,13 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Chip from '@mui/material/Chip'
+import Skeleton from '@mui/material/Skeleton'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import CancelIcon from '@mui/icons-material/Cancel'
 import type { RunResult, ComplexityResult } from '@/types/runner'
 
 interface TestResultsProps {
@@ -28,26 +33,28 @@ export default function TestResults({ result, isRunning, complexity, isAnalyzing
 
   if (isRunning) {
     return (
-      <div className="p-5 space-y-4">
-        <Skeleton className="h-5 w-24" />
+      <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Skeleton variant="text" width={96} height={20} />
         {[1, 2, 3].map(i => (
-          <div key={i} className="flex items-start gap-3">
-            <Skeleton className="h-3 w-3 rounded-full shrink-0 mt-0.5" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-3 w-32" />
-              <Skeleton className="h-3 w-48" />
-            </div>
-          </div>
+          <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+            <Skeleton variant="circular" width={12} height={12} sx={{ mt: 0.25, flexShrink: 0 }} />
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+              <Skeleton variant="text" width={128} height={12} />
+              <Skeleton variant="text" width={192} height={12} />
+            </Box>
+          </Box>
         ))}
-      </div>
+      </Box>
     )
   }
 
   if (!result) {
     return (
-      <div className="h-full flex items-center justify-center px-4 py-8 text-sm text-muted-foreground">
-        Run your code to see results
-      </div>
+      <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', px: 2, py: 4 }}>
+        <Typography variant="body2" color="text.secondary">
+          Run your code to see results
+        </Typography>
+      </Box>
     )
   }
 
@@ -56,90 +63,149 @@ export default function TestResults({ result, isRunning, complexity, isAnalyzing
   const allPassed = passed === total
 
   return (
-    <div className="text-sm flex flex-col">
+    <Box sx={{ fontSize: '0.875rem', display: 'flex', flexDirection: 'column' }}>
       {/* Results header */}
-      <div className={`flex items-center justify-between px-4 py-2.5 border-b shrink-0 border-l-2 ${allPassed ? 'border-l-primary' : 'border-l-destructive'}`}>
-        <Badge variant={allPassed ? 'easy' : 'hard'}>
-          {passed}/{total} passed
-        </Badge>
-        <Button variant="outline" size="sm" onClick={toggleMode}>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        px: 2,
+        py: 1.25,
+        borderBottom: 1,
+        borderColor: 'divider',
+        flexShrink: 0,
+        borderLeft: 3,
+        borderLeftColor: allPassed ? 'success.main' : 'error.main',
+      }}>
+        <Chip
+          label={`${passed}/${total} passed`}
+          size="small"
+          color={allPassed ? 'success' : 'error'}
+        />
+        <Button variant="outlined" size="small" onClick={toggleMode}>
           {mode === 'verbose' ? 'Summary' : 'Verbose'}
         </Button>
-      </div>
+      </Box>
 
       {mode === 'verbose' && (
-        <div className="flex-1 overflow-y-auto">
-          <div className="divide-y divide-border/60">
+        <Box sx={{ flex: 1, overflowY: 'auto' }}>
+          <Box>
             {result.results.map((r, i) => (
-              <div key={i} className={`px-4 py-3 ${r.passed ? '' : 'bg-red-50 dark:bg-red-900/10'}`}>
-                <div className="flex items-center gap-2">
-                  <span className={`text-xs font-bold ${r.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                    {r.passed ? '✓' : '✗'}
-                  </span>
-                  <span className={r.passed ? 'text-muted-foreground' : 'text-foreground'}>{r.description}</span>
-                </div>
-                {!r.passed && (
-                  <div className="mt-2 ml-4 bg-muted p-2.5 font-mono text-xs space-y-1">
-                    {r.error ? (
-                      <div className="text-red-600 dark:text-red-400">Error: {r.error}</div>
-                    ) : (
-                      <>
-                        <div className="text-muted-foreground">expected <span className="text-green-600 dark:text-green-400">{JSON.stringify(r.expected)}</span></div>
-                        <div className="text-muted-foreground">received <span className="text-red-600 dark:text-red-400">{JSON.stringify(r.actual)}</span></div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
+              <Box key={i}>
+                {i > 0 && <Divider sx={{ opacity: 0.6 }} />}
+                <Box sx={{
+                  px: 2,
+                  py: 1.5,
+                  bgcolor: r.passed ? 'transparent' : 'error.main',
+                  '&': r.passed ? {} : { bgcolor: 'rgba(211,47,47,0.05)' },
+                }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {r.passed
+                      ? <CheckCircleIcon sx={{ fontSize: '0.875rem', color: 'success.main', flexShrink: 0 }} />
+                      : <CancelIcon sx={{ fontSize: '0.875rem', color: 'error.main', flexShrink: 0 }} />
+                    }
+                    <Typography variant="body2" color={r.passed ? 'text.secondary' : 'text.primary'}>
+                      {r.description}
+                    </Typography>
+                  </Box>
+                  {!r.passed && (
+                    <Box sx={{
+                      mt: 1,
+                      ml: 2.5,
+                      bgcolor: 'action.hover',
+                      p: 1.25,
+                      fontFamily: 'monospace',
+                      fontSize: '0.75rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 0.5,
+                    }}>
+                      {r.error ? (
+                        <Typography sx={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'error.main' }}>
+                          Error: {r.error}
+                        </Typography>
+                      ) : (
+                        <>
+                          <Typography sx={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'text.secondary' }}>
+                            expected{' '}
+                            <Box component="span" sx={{ color: 'success.main' }}>{JSON.stringify(r.expected)}</Box>
+                          </Typography>
+                          <Typography sx={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'text.secondary' }}>
+                            received{' '}
+                            <Box component="span" sx={{ color: 'error.main' }}>{JSON.stringify(r.actual)}</Box>
+                          </Typography>
+                        </>
+                      )}
+                    </Box>
+                  )}
+                </Box>
+              </Box>
             ))}
-          </div>
+          </Box>
 
           {result.consoleOutput.length > 0 && (
-            <div className="px-4 py-3 border-t">
-              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Console</div>
-              <div className="bg-muted p-2.5 space-y-0.5">
+            <Box sx={{ px: 2, py: 1.5, borderTop: 1, borderColor: 'divider' }}>
+              <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 500, display: 'block', mb: 1 }}>
+                Console
+              </Typography>
+              <Box sx={{ bgcolor: 'action.hover', p: 1.25, display: 'flex', flexDirection: 'column', gap: 0.25 }}>
                 {result.consoleOutput.map((line, i) => (
-                  <div key={i} className="font-mono text-xs text-amber-600 dark:text-yellow-300">{line}</div>
+                  <Typography key={i} sx={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'warning.main' }}>
+                    {line}
+                  </Typography>
                 ))}
-              </div>
-            </div>
+              </Box>
+            </Box>
           )}
-
-        </div>
+        </Box>
       )}
 
       {/* Complexity — shown regardless of verbose/summary mode */}
       {isAnalyzing && !complexity && (
-        <div className="px-4 py-3 border-t space-y-2">
-          <div className="flex items-center gap-2 mb-1">
-            <Skeleton className="h-3 w-20" />
-            <Skeleton className="h-5 w-16 rounded-full" />
-          </div>
-          <Skeleton className="h-3 w-28" />
-          <Skeleton className="h-3 w-24" />
-        </div>
+        <Box sx={{ px: 2, py: 1.5, borderTop: 1, borderColor: 'divider', display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.25 }}>
+            <Skeleton variant="text" width={80} height={12} />
+            <Skeleton variant="rounded" width={64} height={20} sx={{ borderRadius: 9999 }} />
+          </Box>
+          <Skeleton variant="text" width={112} height={12} />
+          <Skeleton variant="text" width={96} height={12} />
+        </Box>
       )}
 
       {complexity && (
-        <div className="px-4 py-3 border-t">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Complexity</span>
-            <Badge variant={complexity.passesTarget ? 'easy' : 'hard'}>
-              {complexity.passesTarget ? 'optimal' : 'suboptimal'}
-            </Badge>
-          </div>
-          <div className="flex gap-3 text-xs text-muted-foreground mb-1.5">
-            <span>Time: <span className="text-foreground font-mono">{complexity.timeComplexity}</span></span>
-            <span>Space: <span className="text-foreground font-mono">{complexity.spaceComplexity}</span></span>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">{complexity.explanation}</p>
+        <Box sx={{ px: 2, py: 1.5, borderTop: 1, borderColor: 'divider' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 500 }}>
+              Complexity
+            </Typography>
+            <Chip
+              label={complexity.passesTarget ? 'optimal' : 'suboptimal'}
+              size="small"
+              color={complexity.passesTarget ? 'success' : 'error'}
+            />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 1.5, mb: 0.75 }}>
+            <Typography variant="caption" color="text.secondary">
+              Time:{' '}
+              <Box component="span" sx={{ color: 'text.primary', fontFamily: 'monospace' }}>{complexity.timeComplexity}</Box>
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Space:{' '}
+              <Box component="span" sx={{ color: 'text.primary', fontFamily: 'monospace' }}>{complexity.spaceComplexity}</Box>
+            </Typography>
+          </Box>
+          <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.6, display: 'block' }}>
+            {complexity.explanation}
+          </Typography>
           {complexity.hint && (
-            <div className="mt-2 px-3 py-2 bg-muted text-xs text-muted-foreground leading-relaxed border">
-              {complexity.hint}
-            </div>
+            <Box sx={{ mt: 1, px: 1.5, py: 1, bgcolor: 'action.hover', border: 1, borderColor: 'divider' }}>
+              <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.6, display: 'block' }}>
+                {complexity.hint}
+              </Typography>
+            </Box>
           )}
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   )
 }
