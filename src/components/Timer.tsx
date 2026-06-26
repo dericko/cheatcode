@@ -1,5 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import { TIMER_MINUTES } from '@/lib/config'
 
 interface TimerProps {
@@ -38,22 +40,40 @@ export default function Timer({ onTimeUp, elapsedRef }: TimerProps) {
   const mins = Math.floor(display / 60_000)
   const secs = Math.floor((display % 60_000) / 1000)
 
-  const colorClass = overtime
-    ? 'text-orange-500'
+  const textColor = overtime
+    ? 'warning.main'
     : nearEnd
-    ? 'text-amber-500'
-    : 'text-muted-foreground'
+    ? 'warning.light'
+    : 'text.secondary'
 
-  const dotClass = overtime
-    ? 'bg-orange-500 animate-pulse'
+  const dotBgColor = overtime
+    ? 'warning.main'
     : nearEnd
-    ? 'bg-amber-500'
-    : 'bg-muted-foreground/40'
+    ? 'warning.light'
+    : 'action.disabled'
 
   return (
-    <div className={`flex items-center gap-1.5 font-mono text-sm tabular-nums transition-colors duration-300 ${colorClass}`}>
-      <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-300 ${dotClass}`} />
-      {overtime ? '+' : ''}{mins}:{String(secs).padStart(2, '0')}
-    </div>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontFamily: 'monospace', fontSize: '0.875rem', fontFeatureSettings: '"tnum"' }}>
+      <Box
+        component="span"
+        sx={{
+          width: 6,
+          height: 6,
+          borderRadius: '50%',
+          flexShrink: 0,
+          bgcolor: dotBgColor,
+          ...(overtime && {
+            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            '@keyframes pulse': {
+              '0%, 100%': { opacity: 1 },
+              '50%': { opacity: 0.5 },
+            },
+          }),
+        }}
+      />
+      <Typography component="span" sx={{ color: textColor, fontFamily: 'monospace', fontSize: '0.875rem', fontFeatureSettings: '"tnum"' }}>
+        {overtime ? '+' : ''}{mins}:{String(secs).padStart(2, '0')}
+      </Typography>
+    </Box>
   )
 }
