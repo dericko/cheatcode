@@ -1,9 +1,13 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
-import { X } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import Box from '@mui/material/Box'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
+import IconButton from '@mui/material/IconButton'
+import Skeleton from '@mui/material/Skeleton'
+import CloseIcon from '@mui/icons-material/Close'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -66,58 +70,83 @@ export default function HintChat({ slug, code, open, onClose }: HintChatProps) {
   }
 
   return (
-    <div>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Panel header */}
-      <div className="flex items-center justify-between px-4 h-10 border-b shrink-0">
-        <span className="text-xs font-medium text-muted-foreground">AI · no spoilers</span>
-        <Button variant="ghost" size="icon" className="h-7 w-7 -mr-1" onClick={onClose}>
-          <X className="h-3.5 w-3.5" />
-        </Button>
-      </div>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, height: 40, borderBottom: 1, borderColor: 'divider', flexShrink: 0 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 'medium' }}>
+          AI · no spoilers
+        </Typography>
+        <IconButton size="small" onClick={onClose} sx={{ mr: -0.5 }}>
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
 
       {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-3">
+      <Box sx={{ flex: 1, overflowY: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
         {messages.length === 0 && (
-          <p className="text-muted-foreground text-xs leading-relaxed">
-            Ask for a nudge. The AI won't write code for you — it'll ask questions to help you find the insight yourself.
-          </p>
+          <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+            Ask for a nudge. The AI won&apos;t write code for you — it&apos;ll ask questions to help you find the insight yourself.
+          </Typography>
         )}
         {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] px-3 py-2 text-xs leading-relaxed ${
-              m.role === 'user'
-                ? 'bg-foreground text-background'
-                : 'bg-muted text-foreground border border-border'
-            }`} style={{ borderRadius: 'var(--radius)' }}>
-              {m.content}
-            </div>
-          </div>
+          <Box key={i} sx={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
+            {m.role === 'user' ? (
+              <Paper
+                sx={{
+                  p: 1.5,
+                  borderRadius: 1,
+                  maxWidth: '85%',
+                  bgcolor: 'primary.main',
+                  color: 'primary.contrastText',
+                }}
+              >
+                <Typography variant="caption" sx={{ lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                  {m.content}
+                </Typography>
+              </Paper>
+            ) : (
+              <Paper
+                variant="outlined"
+                sx={{ p: 1.5, borderRadius: 1, maxWidth: '85%' }}
+              >
+                <Typography variant="caption" sx={{ lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                  {m.content}
+                </Typography>
+              </Paper>
+            )}
+          </Box>
         ))}
         {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-muted border border-border px-3 py-3 space-y-1.5" style={{ borderRadius: 'var(--radius)' }}>
-              <Skeleton className="h-3 w-36" />
-              <Skeleton className="h-3 w-24" />
-            </div>
-          </div>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <Paper variant="outlined" sx={{ p: 1.5, borderRadius: 1 }}>
+              <Skeleton variant="text" width={144} height={12} />
+              <Skeleton variant="text" width={96} height={12} />
+            </Paper>
+          </Box>
         )}
         <div ref={bottomRef} />
-      </div>
+      </Box>
 
-      {/* Input row */}
-      <div className="flex items-center gap-2 px-4 py-3 border-t shrink-0">
-        <Input
-          ref={inputRef}
+      {/* Footer input row */}
+      <Box sx={{ display: 'flex', gap: 1, p: 2, borderTop: 1, borderColor: 'divider', flexShrink: 0 }}>
+        <TextField
+          inputRef={inputRef}
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder="Ask for a hint…"
-          className="flex-1 text-xs"
+          size="small"
+          fullWidth
         />
-        <Button onClick={send} disabled={!input.trim()} size="sm">
+        <Button
+          onClick={send}
+          disabled={!input.trim()}
+          size="small"
+          variant="contained"
+        >
           Send
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }
