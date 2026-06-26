@@ -1,106 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* ── Light mode ─────────────────────────────────────────────── */
-:root {
-  color-scheme: light;
-  --background: #F8F8F6;
-  --foreground: #18181A;
-  --card: #FFFFFF;
-  --card-foreground: #18181A;
-  --popover: #FFFFFF;
-  --popover-foreground: #18181A;
-  --primary: #22C566;
-  --primary-foreground: #0A1A0E;
-  --secondary: #EFEFEB;
-  --secondary-foreground: #18181A;
-  --muted: #EFEFEB;
-  --muted-foreground: #888882;
-  --accent: #EFEFEB;
-  --accent-foreground: #18181A;
-  --destructive: #E5484D;
-  --destructive-foreground: #FFFFFF;
-  --border: #E2E2DC;
-  --input: #E2E2DC;
-  --ring: #22C566;
-  --radius: 0.125rem;
+/* Monaco editor fill */
+.monaco-container {
+  width: 100%;
+  height: 100%;
 }
 
-/* ── Dark mode ──────────────────────────────────────────────── */
-.dark {
-  color-scheme: dark;
-  --background: #111110;
-  --foreground: #F0F0EC;
-  --card: #1A1A18;
-  --card-foreground: #F0F0EC;
-  --popover: #1A1A18;
-  --popover-foreground: #F0F0EC;
-  --primary: #22C566;
-  --primary-foreground: #071209;
-  --secondary: #242422;
-  --secondary-foreground: #F0F0EC;
-  --muted: #242422;
-  --muted-foreground: #888882;
-  --accent: #242422;
-  --accent-foreground: #F0F0EC;
-  --destructive: #C52B30;
-  --destructive-foreground: #F0F0EC;
-  --border: #2C2C2A;
-  --input: #2C2C2A;
-  --ring: #22C566;
-}
-
-/* ── Tailwind v4 theme mapping ────────────────────────────── */
-@theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-}
-
-/* ── Base styles ──────────────────────────────────────────── */
-@layer base {
-  * {
-    border-color: var(--border);
-  }
-  html {
-    scroll-behavior: smooth;
-  }
-  body {
-    background-color: var(--background);
-    color: var(--foreground);
-  }
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--border);
-    border-radius: 9999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--muted-foreground);
-  }
-}
+/* Thin scrollbars */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: rgba(128,128,128,0.3); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background-color: rgba(128,128,128,0.5); }
