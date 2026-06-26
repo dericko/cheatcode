@@ -1,20 +1,18 @@
 'use client'
-import { useTheme } from 'next-themes'
-import { Sun, Moon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import IconButton from '@mui/material/IconButton'
+import LightModeIcon from '@mui/icons-material/LightMode'
+import DarkModeIcon from '@mui/icons-material/DarkMode'
+import { useColorScheme } from '@mui/material/styles'
 
 export function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme()
+  const { mode, setMode } = useColorScheme()
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+    <IconButton
+      onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
       aria-label="Toggle theme"
-      className="relative overflow-hidden"
+      size="small"
     >
-      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-    </Button>
+      {mode === 'dark' ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
+    </IconButton>
   )
 }
