@@ -2,8 +2,19 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import type { Problem, Difficulty, Topic } from '@/types/problem'
-import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import List from '@mui/material/List'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
+import ListSubheader from '@mui/material/ListSubheader'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import Chip from '@mui/material/Chip'
+import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import CheckIcon from '@mui/icons-material/Check'
 
 const TOPICS: Topic[] = ['arrays', 'strings', 'linked-lists', 'trees', 'graphs', 'dynamic-programming', 'misc']
 const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard']
@@ -13,22 +24,44 @@ interface ProblemListProps {
   solvedSlugs: string[]
 }
 
+function difficultyColor(d: Difficulty): 'success' | 'warning' | 'error' {
+  if (d === 'easy') return 'success'
+  if (d === 'medium') return 'warning'
+  return 'error'
+}
+
 function ProblemRow({ p, solved }: { p: Problem; solved: boolean }) {
   return (
-    <Link href={`/problems/${p.slug}`} className="no-underline">
-      <div className="flex items-center py-2.5 border-b border-border last:border-b-0 hover:bg-muted/40 transition-colors duration-100 group px-1">
-        <span className="flex-1 text-sm font-medium text-foreground truncate pr-6 group-hover:text-foreground">
-          {p.title}
-        </span>
-        <span className="w-36 text-xs text-muted-foreground shrink-0 hidden md:block">{p.topic}</span>
-        <div className="w-20 shrink-0">
-          <Badge variant={p.difficulty as Difficulty}>{p.difficulty}</Badge>
-        </div>
-        <span className="w-5 text-right text-primary text-xs font-semibold shrink-0">
-          {solved ? '✓' : ''}
-        </span>
-      </div>
-    </Link>
+    <ListItemButton
+      component={Link as any}
+      href={`/problems/${p.slug}`}
+      divider
+      sx={{ px: 1, py: 1.25 }}
+    >
+      <ListItemText
+        primary={p.title}
+        slotProps={{ primary: { variant: 'body2', fontWeight: 500, noWrap: true } as any }}
+        sx={{ flex: 1, pr: 3 }}
+      />
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ width: 144, flexShrink: 0, display: { xs: 'none', md: 'block' } }}
+      >
+        {p.topic}
+      </Typography>
+      <Box sx={{ width: 80, flexShrink: 0 }}>
+        <Chip
+          label={p.difficulty}
+          color={difficultyColor(p.difficulty as Difficulty)}
+          size="small"
+          sx={{ textTransform: 'capitalize' }}
+        />
+      </Box>
+      <Box sx={{ width: 20, flexShrink: 0, display: 'flex', justifyContent: 'flex-end' }}>
+        {solved && <CheckIcon fontSize="small" color="success" />}
+      </Box>
+    </ListItemButton>
   )
 }
 
@@ -48,57 +81,88 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
   })).filter(g => g.items.length > 0)
 
   return (
-    <div>
+    <Box>
       {/* Filters */}
-      <div className="flex gap-2 mb-6 items-center">
-        <Select value={topicFilter} onValueChange={(v) => setTopicFilter(v as Topic | 'all')}>
-          <SelectTrigger className="w-[152px]">
-            <SelectValue placeholder="All Topics" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Topics</SelectItem>
-            {TOPICS.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-          </SelectContent>
-        </Select>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 3 }}>
+        <FormControl size="small" sx={{ minWidth: 152 }}>
+          <InputLabel id="topic-filter-label">Topic</InputLabel>
+          <Select
+            labelId="topic-filter-label"
+            value={topicFilter}
+            label="Topic"
+            onChange={(e) => setTopicFilter(e.target.value as Topic | 'all')}
+          >
+            <MenuItem value="all">All Topics</MenuItem>
+            {TOPICS.map(t => (
+              <MenuItem key={t} value={t}>{t}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-        <Select value={diffFilter} onValueChange={(v) => setDiffFilter(v as Difficulty | 'all')}>
-          <SelectTrigger className="w-[152px]">
-            <SelectValue placeholder="All Difficulties" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Difficulties</SelectItem>
-            {DIFFICULTIES.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <FormControl size="small" sx={{ minWidth: 152 }}>
+          <InputLabel id="diff-filter-label">Difficulty</InputLabel>
+          <Select
+            labelId="diff-filter-label"
+            value={diffFilter}
+            label="Difficulty"
+            onChange={(e) => setDiffFilter(e.target.value as Difficulty | 'all')}
+          >
+            <MenuItem value="all">All Difficulties</MenuItem>
+            {DIFFICULTIES.map(d => (
+              <MenuItem key={d} value={d}>{d}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-        <span className="ml-auto text-xs text-muted-foreground tabular-nums">{filtered.length} problems</span>
-      </div>
+        <Typography variant="caption" color="text.secondary" sx={{ ml: 'auto !important' }}>
+          {filtered.length} problems
+        </Typography>
+      </Stack>
 
       {/* Column headers */}
-      <div className="flex items-center px-1 pb-2 mb-1 border-b border-border">
-        <span className="flex-1 text-[11px] uppercase tracking-widest text-muted-foreground font-medium">Problem</span>
-        <span className="w-36 text-[11px] uppercase tracking-widest text-muted-foreground font-medium hidden md:block">Topic</span>
-        <span className="w-20 text-[11px] uppercase tracking-widest text-muted-foreground font-medium">Difficulty</span>
-        <span className="w-5" />
-      </div>
+      <Stack
+        direction="row"
+        sx={{ alignItems: 'center', px: 1, pb: 1, mb: 0.5, borderBottom: 1, borderColor: 'divider' }}
+      >
+        <Typography variant="caption" color="text.secondary" sx={{ flex: 1, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500 }}>
+          Problem
+        </Typography>
+        <Typography variant="caption" color="text.secondary" sx={{ width: 144, flexShrink: 0, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500, display: { xs: 'none', md: 'block' } }}>
+          Topic
+        </Typography>
+        <Typography variant="caption" color="text.secondary" sx={{ width: 80, flexShrink: 0, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500 }}>
+          Difficulty
+        </Typography>
+        <Box sx={{ width: 20 }} />
+      </Stack>
 
       {/* Grouped list */}
       {topicFilter === 'all' ? (
         grouped.map(({ topic, items }) => (
-          <div key={topic} className="mb-6">
-            <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium mb-1 px-1">
-              {topic} <span className="opacity-50">({items.length})</span>
-            </p>
+          <List
+            key={topic}
+            subheader={
+              <ListSubheader sx={{ lineHeight: '2rem', px: 1, bgcolor: 'transparent' }}>
+                <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500 }}>
+                  {topic} <Box component="span" sx={{ opacity: 0.5 }}>({items.length})</Box>
+                </Typography>
+              </ListSubheader>
+            }
+            disablePadding
+            sx={{ mb: 3 }}
+          >
             {items.map(p => (
               <ProblemRow key={p.slug} p={p} solved={solvedSlugs.has(p.slug)} />
             ))}
-          </div>
+          </List>
         ))
       ) : (
-        filtered.map(p => (
-          <ProblemRow key={p.slug} p={p} solved={solvedSlugs.has(p.slug)} />
-        ))
+        <List disablePadding>
+          {filtered.map(p => (
+            <ProblemRow key={p.slug} p={p} solved={solvedSlugs.has(p.slug)} />
+          ))}
+        </List>
       )}
-    </div>
+    </Box>
   )
 }
