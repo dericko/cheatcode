@@ -8,6 +8,15 @@ export type Topic =
   | 'dynamic-programming'
   | 'misc'
 
+export type Language = 'typescript' | 'ruby'
+
+export interface LanguageConfig {
+  methodName: string
+  starterCode: string
+  setupCode?: string
+  testCallCode?: string
+}
+
 export interface TestCase {
   input: any[]
   expected: any
@@ -26,4 +35,5 @@ export interface Problem {
   testCallCode?: string
   testCases: TestCase[]
   targetComplexity?: string
+  ruby?: LanguageConfig
 }
