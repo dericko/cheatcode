@@ -16,8 +16,11 @@ model Attempt {
 }
 
 model ProblemProgress {
-  slug       String   @id
+  slug       String
+  language   String   @default("typescript")
   solved     Boolean  @default(false)
   bestTimeMs Int?
   updatedAt  DateTime @updatedAt
+
+  @@id([slug, language])
 }

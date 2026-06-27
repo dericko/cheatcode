@@ -15,12 +15,12 @@ export const dynamic = 'force-dynamic'
 export default async function HomePage() {
   const problems = getAllProblems()
   const solvedProgress = await db.problemProgress.findMany({ where: { solved: true } })
-  const solvedSlugs = solvedProgress.map(p => p.slug)
+  const solvedSlugs = [...new Set(solvedProgress.map(p => p.slug))]
 
   const easy = problems.filter(p => p.difficulty === 'easy').length
   const medium = problems.filter(p => p.difficulty === 'medium').length
   const hard = problems.filter(p => p.difficulty === 'hard').length
-  const solvedCount = solvedProgress.length
+  const solvedCount = solvedSlugs.length
   const pct = problems.length > 0 ? Math.round((solvedCount / problems.length) * 100) : 0
 
   return (
