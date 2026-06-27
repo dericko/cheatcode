@@ -18,4 +18,8 @@ Example:
     { input: [[-1,1,0,-3,3]], expected: [0,0,9,0,0], description: 'contains zero' },
     { input: [[1,1]], expected: [1,1], description: 'two elements' },
   ],
+  ruby: {
+    methodName: 'product_except_self',
+    starterCode: `def product_except_self(nums)\n\nend`,
+  },
 }

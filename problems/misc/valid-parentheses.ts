@@ -19,4 +19,8 @@ Example:
     { input: ['(]'], expected: false, description: 'mismatched' },
     { input: ['([)]'], expected: false, description: 'wrong order' },
   ],
+  ruby: {
+    methodName: 'is_valid',
+    starterCode: `def is_valid(s)\n\nend`,
+  },
 }

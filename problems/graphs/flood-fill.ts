@@ -18,4 +18,8 @@ Example:
     { input: [[[0,0,0],[0,0,0]], 0, 0, 0], expected: [[0,0,0],[0,0,0]], description: 'same color — no change' },
     { input: [[[1,2,1],[1,2,0],[1,0,1]], 1, 1, 3], expected: [[1,3,1],[1,3,0],[1,0,1]], description: 'fills only connected' },
   ],
+  ruby: {
+    methodName: 'flood_fill',
+    starterCode: `def flood_fill(image, sr, sc, color)\n\nend`,
+  },
 }

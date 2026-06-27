@@ -19,4 +19,9 @@ Example:
     { input: [[0,1,1]], expected: [], description: 'no triplets' },
     { input: [[0,0,0]], expected: [[0,0,0]], description: 'all zeros' },
   ],
+  ruby: {
+    methodName: 'three_sum',
+    starterCode: `def three_sum(nums)\n\nend`,
+    testCallCode: `three_sum(tc['input'][0]).map { |t| t.sort }.sort_by { |t| [t[0], t[1]] }`,
+  },
 }

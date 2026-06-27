@@ -18,4 +18,8 @@ Example:
     { input: ['hit', 'cog', ['hot','dot','dog','lot','log']], expected: 0, description: 'endWord not in list' },
     { input: ['a', 'c', ['a','b','c']], expected: 2, description: 'direct one-step transform' },
   ],
+  ruby: {
+    methodName: 'ladder_length',
+    starterCode: `def ladder_length(begin_word, end_word, word_list)\n\nend`,
+  },
 }

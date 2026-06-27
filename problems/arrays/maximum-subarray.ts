@@ -19,4 +19,8 @@ Example:
     { input: [[1]], expected: 1, description: 'single element' },
     { input: [[5,4,-1,7,8]], expected: 23, description: 'mostly positive' },
   ],
+  ruby: {
+    methodName: 'max_sub_array',
+    starterCode: `def max_sub_array(nums)\n\nend`,
+  },
 }

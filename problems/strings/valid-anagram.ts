@@ -18,4 +18,8 @@ Example:
     { input: ['rat', 'car'], expected: false, description: 'not an anagram' },
     { input: ['a', 'ab'], expected: false, description: 'different lengths' },
   ],
+  ruby: {
+    methodName: 'is_anagram',
+    starterCode: `def is_anagram(s, t)\n\nend`,
+  },
 }

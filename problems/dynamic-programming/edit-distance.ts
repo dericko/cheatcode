@@ -18,4 +18,8 @@ Example:
     { input: ['intention', 'execution'], expected: 5, description: 'intention → execution' },
     { input: ['', 'a'], expected: 1, description: 'empty to single char' },
   ],
+  ruby: {
+    methodName: 'min_distance',
+    starterCode: `def min_distance(word1, word2)\n\nend`,
+  },
 }

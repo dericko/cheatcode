@@ -21,4 +21,8 @@ Example:
     { input: [[3,2,4], 6], expected: [1,2], description: 'non-sequential indices' },
     { input: [[3,3], 6], expected: [0,1], description: 'duplicate values' },
   ],
+  ruby: {
+    methodName: 'two_sum',
+    starterCode: `def two_sum(nums, target)\n\nend`,
+  },
 }

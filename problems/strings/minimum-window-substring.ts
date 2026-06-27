@@ -18,4 +18,8 @@ Example:
     { input: ['a', 'a'], expected: 'a', description: 'exact match' },
     { input: ['a', 'aa'], expected: '', description: 'impossible' },
   ],
+  ruby: {
+    methodName: 'min_window',
+    starterCode: `def min_window(s, t)\n\nend`,
+  },
 }

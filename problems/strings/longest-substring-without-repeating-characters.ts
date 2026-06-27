@@ -18,4 +18,8 @@ Example:
     { input: ['bbbbb'], expected: 1, description: 'all same' },
     { input: ['pwwkew'], expected: 3, description: '"wke"' },
   ],
+  ruby: {
+    methodName: 'length_of_longest_substring',
+    starterCode: `def length_of_longest_substring(s)\n\nend`,
+  },
 }

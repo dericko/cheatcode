@@ -18,4 +18,8 @@ Example:
     { input: [[2], 3], expected: -1, description: 'impossible' },
     { input: [[1,5,11], 11], expected: 1, description: 'exact coin available' },
   ],
+  ruby: {
+    methodName: 'coin_change',
+    starterCode: `def coin_change(coins, amount)\n\nend`,
+  },
 }

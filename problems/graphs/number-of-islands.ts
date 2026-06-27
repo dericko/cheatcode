@@ -18,4 +18,8 @@ Example:
     { input: [[['1','1','0','0','0'],['1','1','0','0','0'],['0','0','1','0','0'],['0','0','0','1','1']]], expected: 3, description: 'three islands' },
     { input: [[['0']]], expected: 0, description: 'all water' },
   ],
+  ruby: {
+    methodName: 'num_islands',
+    starterCode: `def num_islands(grid)\n\nend`,
+  },
 }

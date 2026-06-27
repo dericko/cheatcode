@@ -18,4 +18,8 @@ Example:
     { input: [[4,2,0,3,2,5]], expected: 9, description: 'valley shape' },
     { input: [[1,0,1]], expected: 1, description: 'simple valley' },
   ],
+  ruby: {
+    methodName: 'trap',
+    starterCode: `def trap(height)\n\nend`,
+  },
 }

@@ -18,4 +18,8 @@ Example:
     { input: [[1,1]], expected: 1, description: 'two equal heights' },
     { input: [[4,3,2,1,4]], expected: 16, description: 'equal edges' },
   ],
+  ruby: {
+    methodName: 'max_area',
+    starterCode: `def max_area(height)\n\nend`,
+  },
 }

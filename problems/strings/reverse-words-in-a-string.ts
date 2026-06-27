@@ -18,4 +18,8 @@ Example:
     { input: ['  hello world  '], expected: 'world hello', description: 'trim spaces' },
     { input: ['a good   example'], expected: 'example good a', description: 'multiple spaces' },
   ],
+  ruby: {
+    methodName: 'reverse_words',
+    starterCode: `def reverse_words(s)\n\nend`,
+  },
 }

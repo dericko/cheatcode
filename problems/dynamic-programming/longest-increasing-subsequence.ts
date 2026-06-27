@@ -18,4 +18,8 @@ Example:
     { input: [[0,1,0,3,2,3]], expected: 4, description: '[0,1,2,3]' },
     { input: [[7,7,7,7,7,7,7]], expected: 1, description: 'all same — LIS of 1' },
   ],
+  ruby: {
+    methodName: 'length_of_lis',
+    starterCode: `def length_of_lis(nums)\n\nend`,
+  },
 }

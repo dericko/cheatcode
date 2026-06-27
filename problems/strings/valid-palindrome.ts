@@ -18,4 +18,8 @@ Example:
     { input: ['race a car'], expected: false, description: 'not a palindrome' },
     { input: [' '], expected: true, description: 'empty after cleaning' },
   ],
+  ruby: {
+    methodName: 'is_palindrome',
+    starterCode: `def is_palindrome(s)\n\nend`,
+  },
 }

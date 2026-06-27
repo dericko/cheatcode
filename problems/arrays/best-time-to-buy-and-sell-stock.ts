@@ -19,4 +19,8 @@ Example:
     { input: [[7,6,4,3,1]], expected: 0, description: 'declining prices — no profit' },
     { input: [[1,2]], expected: 1, description: 'two-day window' },
   ],
+  ruby: {
+    methodName: 'max_profit',
+    starterCode: `def max_profit(prices)\n\nend`,
+  },
 }

@@ -18,4 +18,8 @@ Example:
     { input: [[2,7,9,3,1]], expected: 12, description: '2+9+1=12' },
     { input: [[1]], expected: 1, description: 'single house' },
   ],
+  ruby: {
+    methodName: 'rob',
+    starterCode: `def rob(nums)\n\nend`,
+  },
 }

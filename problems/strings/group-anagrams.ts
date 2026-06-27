@@ -19,4 +19,9 @@ Example:
     { input: [['']], expected: [['']], description: 'empty string' },
     { input: [['a']], expected: [['a']], description: 'single string' },
   ],
+  ruby: {
+    methodName: 'group_anagrams',
+    starterCode: `def group_anagrams(strs)\n\nend`,
+    testCallCode: `group_anagrams(tc['input'][0]).map { |g| g.sort }.sort_by { |g| g[0] }`,
+  },
 }

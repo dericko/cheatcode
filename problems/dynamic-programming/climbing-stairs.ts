@@ -18,4 +18,8 @@ Example:
     { input: [3], expected: 3, description: '3 stairs — 3 ways' },
     { input: [5], expected: 8, description: '5 stairs — 8 ways' },
   ],
+  ruby: {
+    methodName: 'climb_stairs',
+    starterCode: `def climb_stairs(n)\n\nend`,
+  },
 }

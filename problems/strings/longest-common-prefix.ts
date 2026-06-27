@@ -18,4 +18,8 @@ Example:
     { input: [['dog','racecar','car']], expected: '', description: 'no common prefix' },
     { input: [['ab','a']], expected: 'a', description: 'prefix is one char' },
   ],
+  ruby: {
+    methodName: 'longest_common_prefix',
+    starterCode: `def longest_common_prefix(strs)\n\nend`,
+  },
 }

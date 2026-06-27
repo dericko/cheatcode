@@ -18,4 +18,8 @@ Example:
     { input: [[1,2,3,4]], expected: false, description: 'all unique' },
     { input: [[1,1,1,3,3,4,3,2,4,2]], expected: true, description: 'many duplicates' },
   ],
+  ruby: {
+    methodName: 'contains_duplicate',
+    starterCode: `def contains_duplicate(nums)\n\nend`,
+  },
 }
