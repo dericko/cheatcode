@@ -11,6 +11,9 @@ import IconButton from '@mui/material/IconButton'
 import Chip from '@mui/material/Chip'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 import Drawer from '@mui/material/Drawer'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
@@ -21,12 +24,13 @@ import Timer from '@/components/Timer'
 import TestResults from '@/components/TestResults'
 import HintChat from '@/components/HintChat'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import type { Problem } from '@/types/problem'
+import type { Problem, Language } from '@/types/problem'
 import type { RunResult, ComplexityResult } from '@/types/runner'
 
 const Editor = dynamic(() => import('@/components/Editor'), { ssr: false })
 
-const STORAGE_KEY = (slug: string) => `code:${slug}`
+const LANG_KEY = (slug: string) => `lang:${slug}`
+const CODE_KEY = (slug: string, lang: Language) => `code:${slug}:${lang}`
 
 const DIFFICULTY_COLOR: Record<string, 'success' | 'warning' | 'error' | 'default'> = {
   easy: 'success',
@@ -34,12 +38,24 @@ const DIFFICULTY_COLOR: Record<string, 'success' | 'warning' | 'error' | 'defaul
   hard: 'error',
 }
 
+function starterForLanguage(problem: Problem, lang: Language): string {
+  return lang === 'ruby' ? (problem.ruby?.starterCode ?? problem.starterCode) : problem.starterCode
+}
+
 export default function ProblemClient({ problem }: { problem: Problem }) {
   const { colorScheme } = useColorScheme()
+
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window === 'undefined') return 'typescript'
+    return (localStorage.getItem(LANG_KEY(problem.slug)) ?? 'typescript') as Language
+  })
+
   const [code, setCode] = useState(() => {
     if (typeof window === 'undefined') return problem.starterCode
-    return localStorage.getItem(STORAGE_KEY(problem.slug)) ?? problem.starterCode
+    const lang = (localStorage.getItem(LANG_KEY(problem.slug)) ?? 'typescript') as Language
+    return localStorage.getItem(CODE_KEY(problem.slug, lang)) ?? starterForLanguage(problem, lang)
   })
+
   const [result, setResult] = useState<RunResult | null>(null)
   const [complexity, setComplexity] = useState<ComplexityResult | null>(null)
   const [isRunning, setIsRunning] = useState(false)
@@ -52,8 +68,17 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
   const runIdRef = useRef(0)
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY(problem.slug), code)
-  }, [code, problem.slug])
+    localStorage.setItem(CODE_KEY(problem.slug, language), code)
+  }, [code, problem.slug, language])
+
+  const handleLanguageChange = (newLang: Language) => {
+    localStorage.setItem(LANG_KEY(problem.slug), newLang)
+    setLanguage(newLang)
+    const saved = localStorage.getItem(CODE_KEY(problem.slug, newLang))
+    setCode(saved ?? starterForLanguage(problem, newLang))
+    setResult(null)
+    setComplexity(null)
+  }
 
   // Keyboard shortcut: Cmd+Enter to run
   useEffect(() => {
@@ -65,7 +90,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [code, isRunning, skipAnalysis, problem.slug])
+  }, [code, isRunning, skipAnalysis, problem.slug, language])
 
   const showToast = (msg: string, severity: 'success' | 'error' | 'info' = 'success') => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
@@ -80,12 +105,11 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
     setComplexity(null)
     const runId = ++runIdRef.current
 
-    // fire-and-forget: don't block test results on LLM analysis
     if (!skipAnalysis) {
       fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: problem.slug, code }),
+        body: JSON.stringify({ slug: problem.slug, code, language }),
       }).then(r => r.ok ? r.json() : null).then(data => {
         if (data && runIdRef.current === runId) setComplexity(data)
       }).catch(() => { }).finally(() => setIsAnalyzing(false))
@@ -97,7 +121,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
       const res = await fetch('/api/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: problem.slug, code }),
+        body: JSON.stringify({ slug: problem.slug, code, language }),
       })
 
       if (!res.ok) {
@@ -111,7 +135,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         await fetch('/api/progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug: problem.slug, code, passed: true, timeSpentMs: elapsedRef.current }),
+          body: JSON.stringify({ slug: problem.slug, code, passed: true, timeSpentMs: elapsedRef.current, language }),
         })
         showToast('All tests passed!')
       }
@@ -158,6 +182,19 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
 
           {/* Right controls */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+            {/* Language selector */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <Select
+                value={language}
+                onChange={(e) => handleLanguageChange(e.target.value as Language)}
+                variant="outlined"
+                sx={{ fontSize: '0.75rem' }}
+              >
+                <MenuItem value="typescript">TypeScript</MenuItem>
+                <MenuItem value="ruby" disabled={!problem.ruby}>Ruby</MenuItem>
+              </Select>
+            </FormControl>
+
             <Timer onTimeUp={() => showToast("Time's up — keep going!")} elapsedRef={elapsedRef} />
 
             <FormControlLabel
@@ -243,6 +280,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
               onChange={setCode}
               onRun={handleRun}
               theme={colorScheme === 'dark' ? 'vs-dark' : 'vs'}
+              language={language}
             />
           </Box>
         </Box>
@@ -282,7 +320,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
           },
         }}
       >
-        <HintChat slug={problem.slug} code={code} open={hintsOpen} onClose={() => setHintsOpen(false)} />
+        <HintChat slug={problem.slug} code={code} open={hintsOpen} onClose={() => setHintsOpen(false)} language={language} />
       </Drawer>
 
       {/* Toast */}

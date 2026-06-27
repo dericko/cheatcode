@@ -8,6 +8,7 @@ import Paper from '@mui/material/Paper'
 import IconButton from '@mui/material/IconButton'
 import Skeleton from '@mui/material/Skeleton'
 import CloseIcon from '@mui/icons-material/Close'
+import type { Language } from '@/types/problem'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -19,9 +20,10 @@ interface HintChatProps {
   code: string
   open: boolean
   onClose: () => void
+  language?: Language
 }
 
-export default function HintChat({ slug, code, open, onClose }: HintChatProps) {
+export default function HintChat({ slug, code, open, onClose, language }: HintChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -47,7 +49,7 @@ export default function HintChat({ slug, code, open, onClose }: HintChatProps) {
       const res = await fetch('/api/hint', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug, code, messages: updated }),
+        body: JSON.stringify({ slug, code, messages: updated, language: language ?? 'typescript' }),
       })
       const data = await res.json()
       if (!res.ok || data.error) {
