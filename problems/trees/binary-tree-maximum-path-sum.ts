@@ -1,5 +1,6 @@
 import type { Problem } from '../../src/types/problem'
 import { TREE_SETUP } from '../shared'
+import { RUBY_TREE_SETUP } from '../shared_ruby'
 
 export const problem: Problem = {
   slug: 'binary-tree-maximum-path-sum',
@@ -21,4 +22,10 @@ Example:
     { input: [[-10,9,20,null,null,15,7]], expected: 42, description: '15+20+7' },
     { input: [[-3]], expected: -3, description: 'single negative node' },
   ],
+  ruby: {
+    methodName: 'max_path_sum',
+    starterCode: `def max_path_sum(root)\n\nend`,
+    setupCode: RUBY_TREE_SETUP,
+    testCallCode: `max_path_sum(array_to_tree(tc['input'][0]))`,
+  },
 }

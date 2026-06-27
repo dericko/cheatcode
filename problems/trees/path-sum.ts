@@ -1,5 +1,6 @@
 import type { Problem } from '../../src/types/problem'
 import { TREE_SETUP } from '../shared'
+import { RUBY_TREE_SETUP } from '../shared_ruby'
 
 export const problem: Problem = {
   slug: 'path-sum',
@@ -21,4 +22,10 @@ Example:
     { input: [[1,2,3], 5], expected: false, description: 'no matching path' },
     { input: [[], 0], expected: false, description: 'empty tree' },
   ],
+  ruby: {
+    methodName: 'has_path_sum',
+    starterCode: `def has_path_sum(root, target_sum)\n\nend`,
+    setupCode: RUBY_TREE_SETUP,
+    testCallCode: `has_path_sum(array_to_tree(tc['input'][0]), tc['input'][1])`,
+  },
 }

@@ -1,5 +1,6 @@
 import type { Problem } from '../../src/types/problem'
 import { TREE_SETUP } from '../shared'
+import { RUBY_TREE_SETUP } from '../shared_ruby'
 
 export const problem: Problem = {
   slug: 'maximum-depth-of-binary-tree',
@@ -23,4 +24,10 @@ Example:
     { input: [[1,null,2]], expected: 2, description: 'right-skewed' },
     { input: [[]], expected: 0, description: 'empty tree' },
   ],
+  ruby: {
+    methodName: 'max_depth',
+    starterCode: `def max_depth(root)\n\nend`,
+    setupCode: RUBY_TREE_SETUP,
+    testCallCode: `max_depth(array_to_tree(tc['input'][0]))`,
+  },
 }

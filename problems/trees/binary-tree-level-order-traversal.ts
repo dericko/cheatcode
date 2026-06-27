@@ -1,5 +1,6 @@
 import type { Problem } from '../../src/types/problem'
 import { TREE_SETUP } from '../shared'
+import { RUBY_TREE_SETUP } from '../shared_ruby'
 
 export const problem: Problem = {
   slug: 'binary-tree-level-order-traversal',
@@ -21,4 +22,10 @@ Example:
     { input: [[1]], expected: [[1]], description: 'single node' },
     { input: [[]], expected: [], description: 'empty tree' },
   ],
+  ruby: {
+    methodName: 'level_order',
+    starterCode: `def level_order(root)\n\nend`,
+    setupCode: RUBY_TREE_SETUP,
+    testCallCode: `level_order(array_to_tree(tc['input'][0]))`,
+  },
 }
