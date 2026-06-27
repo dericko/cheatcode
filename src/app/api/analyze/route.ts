@@ -3,6 +3,7 @@ import { getProblemBySlug } from '@/lib/problems'
 import { google } from '@ai-sdk/google'
 import { generateObject } from 'ai'
 import { z } from 'zod'
+import type { Language } from '@/types/problem'
 
 const schema = z.object({
   timeComplexity: z.string(),
@@ -13,10 +14,16 @@ const schema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const { slug, code } = await req.json()
+  const { slug, code, language = 'typescript' } = await req.json() as {
+    slug: string
+    code: string
+    language?: Language
+  }
   const problem = getProblemBySlug(slug)
   if (!problem) return NextResponse.json({ error: 'Problem not found' }, { status: 404 })
 
+  const langLabel = language === 'ruby' ? 'Ruby' : 'TypeScript'
+  const entryPoint = language === 'ruby' ? (problem.ruby?.methodName ?? problem.functionName) : problem.functionName
   const targetLine = problem.targetComplexity
     ? `The optimal target time complexity for this problem is ${problem.targetComplexity}.`
     : 'There is no specific target complexity — just analyze what the code does.'
@@ -28,8 +35,8 @@ ${problem.description}
 
 ${targetLine}
 
-User's solution:
-\`\`\`typescript
+User's solution (${langLabel}, method: ${entryPoint}):
+\`\`\`${language}
 ${code}
 \`\`\`
 
