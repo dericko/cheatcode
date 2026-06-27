@@ -1,5 +1,6 @@
 import type { Problem } from '../../src/types/problem'
 import { LINKED_LIST_SETUP } from '../shared'
+import { RUBY_LINKED_LIST_SETUP } from '../shared_ruby'
 
 export const problem: Problem = {
   slug: 'reverse-linked-list',
@@ -23,4 +24,10 @@ Example:
     { input: [[1,2]], expected: [2,1], description: '2-node list' },
     { input: [[1]], expected: [1], description: 'single node' },
   ],
+  ruby: {
+    methodName: 'reverse_list',
+    starterCode: `def reverse_list(head)\n\nend`,
+    setupCode: RUBY_LINKED_LIST_SETUP,
+    testCallCode: `list_to_array(reverse_list(array_to_list(tc['input'][0])))`,
+  },
 }

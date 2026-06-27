@@ -1,5 +1,6 @@
 import type { Problem } from '../../src/types/problem'
 import { LINKED_LIST_SETUP } from '../shared'
+import { RUBY_LINKED_LIST_SETUP } from '../shared_ruby'
 
 export const problem: Problem = {
   slug: 'merge-two-sorted-lists',
@@ -21,4 +22,10 @@ Example:
     { input: [[],[]], expected: [], description: 'both empty' },
     { input: [[],[0]], expected: [0], description: 'one empty' },
   ],
+  ruby: {
+    methodName: 'merge_two_lists',
+    starterCode: `def merge_two_lists(list1, list2)\n\nend`,
+    setupCode: RUBY_LINKED_LIST_SETUP,
+    testCallCode: `list_to_array(merge_two_lists(array_to_list(tc['input'][0]), array_to_list(tc['input'][1])))`,
+  },
 }

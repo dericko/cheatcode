@@ -1,5 +1,6 @@
 import type { Problem } from '../../src/types/problem'
 import { LINKED_LIST_SETUP } from '../shared'
+import { RUBY_LINKED_LIST_SETUP } from '../shared_ruby'
 
 export const problem: Problem = {
   slug: 'linked-list-cycle',
@@ -22,4 +23,10 @@ Example:
     { input: [[1,2], 0], expected: true, description: 'cycle at head' },
     { input: [[1], -1], expected: false, description: 'no cycle' },
   ],
+  ruby: {
+    methodName: 'has_cycle',
+    starterCode: `def has_cycle(head)\n\nend`,
+    setupCode: RUBY_LINKED_LIST_SETUP,
+    testCallCode: `has_cycle(build_cyclic_list(tc['input'][0], tc['input'][1]))`,
+  },
 }

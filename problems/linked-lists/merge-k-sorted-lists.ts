@@ -1,5 +1,6 @@
 import type { Problem } from '../../src/types/problem'
 import { LINKED_LIST_SETUP } from '../shared'
+import { RUBY_LINKED_LIST_SETUP } from '../shared_ruby'
 
 export const problem: Problem = {
   slug: 'merge-k-sorted-lists',
@@ -21,4 +22,10 @@ Example:
     { input: [[[]]], expected: [], description: 'one empty list' },
     { input: [[]], expected: [], description: 'no lists' },
   ],
+  ruby: {
+    methodName: 'merge_k_lists',
+    starterCode: `def merge_k_lists(lists)\n\nend`,
+    setupCode: RUBY_LINKED_LIST_SETUP,
+    testCallCode: `list_to_array(merge_k_lists(tc['input'][0].map { |arr| array_to_list(arr) }))`,
+  },
 }
