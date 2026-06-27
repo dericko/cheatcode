@@ -1,13 +1,18 @@
 import { spawn } from 'child_process'
 import { writeFileSync, unlinkSync } from 'fs'
 import { tmpdir } from 'os'
-import { join } from 'path'
+import { join, dirname } from 'path'
+import { createRequire } from 'module'
 import { randomUUID } from 'crypto'
 import type { RunRequest, RunResult } from '@/types/runner'
+import type { Language } from '@/types/problem'
 
-const TSX_BIN = join(process.cwd(), 'node_modules', '.bin', 'tsx')
+// Resolve tsx via Node module resolution so this works in git worktrees that
+// share the parent's node_modules (process.cwd() may point to the worktree)
+const _require = createRequire(import.meta.url)
+const TSX_BIN = join(dirname(_require.resolve('tsx/package.json')), '..', '.bin', 'tsx')
 
-function generateScript(req: RunRequest): string {
+function generateTypeScriptScript(req: RunRequest): string {
   const testCasesJson = JSON.stringify(req.testCases)
   const callExpr = req.testCallCode ?? `${req.functionName}(...tc.input)`
 
@@ -59,13 +64,63 @@ __origStdoutWrite(JSON.stringify({ results: __results, consoleOutput: __console 
 `
 }
 
-export async function runCode(req: RunRequest): Promise<RunResult> {
-  const script = generateScript(req)
-  const tmpFile = join(tmpdir(), `cheatcode-${randomUUID()}.ts`)
+function generateRubyScript(req: RunRequest): string {
+  const testCasesB64 = Buffer.from(JSON.stringify(req.testCases)).toString('base64')
+  const callExpr = req.testCallCode ?? `send(:${req.functionName}, *tc['input'])`
+
+  return `require 'json'
+require 'base64'
+require 'stringio'
+
+$__real_stdout = STDOUT.dup
+$__captured_io = StringIO.new
+$stdout = $__captured_io
+
+${req.setupCode ?? ''}
+
+${req.userCode}
+
+def __deep_equal(a, b)
+  if a.is_a?(Array) && b.is_a?(Array)
+    return false unless a.length == b.length
+    a.each_with_index.all? { |v, i| __deep_equal(v, b[i]) }
+  elsif a.is_a?(Hash) && b.is_a?(Hash)
+    a_keys = a.keys.map(&:to_s).sort
+    b_keys = b.keys.map(&:to_s).sort
+    return false unless a_keys == b_keys
+    a_keys.all? { |k| __deep_equal(a[k] || a[k.to_sym], b[k] || b[k.to_sym]) }
+  else
+    a == b
+  end
+end
+
+__test_cases = JSON.parse(Base64.decode64('${testCasesB64}'))
+__results = []
+
+__test_cases.each do |tc|
+  begin
+    actual = ${callExpr}
+    __results << {
+      'passed' => __deep_equal(actual, tc['expected']),
+      'actual' => actual,
+      'expected' => tc['expected'],
+      'description' => tc['description']
+    }
+  rescue => e
+    __results << { 'passed' => false, 'error' => e.message, 'description' => tc['description'] }
+  end
+end
+
+__console_lines = $__captured_io.string.lines.map(&:chomp).reject(&:empty?)
+$__real_stdout.write(JSON.generate({ 'results' => __results, 'consoleOutput' => __console_lines }))
+`
+}
+
+async function spawnRunner(bin: string, args: string[], tmpFile: string, script: string): Promise<RunResult> {
   writeFileSync(tmpFile, script, 'utf-8')
 
   return new Promise((resolve) => {
-    const proc = spawn(TSX_BIN, [tmpFile], { timeout: 10_000 })
+    const proc = spawn(bin, args, { timeout: 10_000 })
 
     let stdout = ''
     let stderr = ''
@@ -101,4 +156,16 @@ export async function runCode(req: RunRequest): Promise<RunResult> {
       })
     })
   })
+}
+
+export async function runCode(req: RunRequest, language: Language = 'typescript'): Promise<RunResult> {
+  if (language === 'ruby') {
+    const script = generateRubyScript(req)
+    const tmpFile = join(tmpdir(), `cheatcode-${randomUUID()}.rb`)
+    return spawnRunner('ruby', [tmpFile], tmpFile, script)
+  }
+
+  const script = generateTypeScriptScript(req)
+  const tmpFile = join(tmpdir(), `cheatcode-${randomUUID()}.ts`)
+  return spawnRunner(TSX_BIN, [tmpFile], tmpFile, script)
 }
