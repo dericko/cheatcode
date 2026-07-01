@@ -1,16 +1,14 @@
 import { spawn } from 'child_process'
 import { writeFileSync, unlinkSync } from 'fs'
 import { tmpdir } from 'os'
-import { join, dirname } from 'path'
-import { createRequire } from 'module'
+import { join } from 'path'
 import { randomUUID } from 'crypto'
 import type { RunRequest, RunResult } from '@/types/runner'
 import type { Language } from '@/types/problem'
 
-// Resolve tsx via Node module resolution so this works in git worktrees that
-// share the parent's node_modules (process.cwd() may point to the worktree)
-const _require = createRequire(import.meta.url)
-const TSX_BIN = join(dirname(_require.resolve('tsx/package.json')), '..', '.bin', 'tsx')
+// RUNNER_TSX_BIN is injected by next.config.ts at build time using the real
+// process.cwd() from the config process, bypassing Turbopack's path virtualization.
+const TSX_BIN = process.env.RUNNER_TSX_BIN!
 
 function generateTypeScriptScript(req: RunRequest): string {
   const testCasesJson = JSON.stringify(req.testCases)
@@ -148,10 +146,11 @@ async function spawnRunner(bin: string, args: string[], tmpFile: string, script:
       }
     })
 
-    proc.on('error', () => {
+    proc.on('error', (err) => {
       try { unlinkSync(tmpFile) } catch {}
+      console.error('[runner] spawn error', { bin, args, code: (err as any).code, message: err.message })
       resolve({
-        results: [{ passed: false, description: 'execution', error: 'Failed to spawn runner' }],
+        results: [{ passed: false, description: 'execution', error: `Failed to spawn runner: ${err.message}` }],
         consoleOutput: [],
       })
     })
