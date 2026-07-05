@@ -1,6 +1,7 @@
 import { getAllProblems } from '@/lib/problems'
 import { db } from '@/lib/db'
 import ProblemList from '@/components/ProblemList'
+import { Suspense } from 'react'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -55,7 +56,9 @@ export default async function HomePage() {
           <LinearProgress variant="determinate" value={pct} />
         </Box>
 
-        <ProblemList problems={problems} solvedSlugs={solvedSlugs} />
+        <Suspense>
+          <ProblemList problems={problems} solvedSlugs={solvedSlugs} />
+        </Suspense>
       </Container>
     </Box>
   )

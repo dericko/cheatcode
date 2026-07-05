@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback } from 'react'
 import Link from 'next/link'
 import type { Problem, Difficulty, Topic } from '@/types/problem'
 import List from '@mui/material/List'
@@ -67,8 +68,22 @@ function ProblemRow({ p, solved }: { p: Problem; solved: boolean }) {
 
 export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: ProblemListProps) {
   const solvedSlugs = new Set(solvedSlugsArr)
-  const [topicFilter, setTopicFilter] = useState<Topic | 'all'>('all')
-  const [diffFilter, setDiffFilter] = useState<Difficulty | 'all'>('all')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const topicFilter = (searchParams.get('topic') as Topic | null) ?? 'all'
+  const diffFilter = (searchParams.get('difficulty') as Difficulty | null) ?? 'all'
+
+  const setFilter = useCallback((key: 'topic' | 'difficulty', value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value === 'all') {
+      params.delete(key)
+    } else {
+      params.set(key, value)
+    }
+    const qs = params.toString()
+    router.replace(qs ? `?${qs}` : '?', { scroll: false })
+  }, [router, searchParams])
 
   const filtered = problems.filter(p =>
     (topicFilter === 'all' || p.topic === topicFilter) &&
@@ -90,7 +105,7 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
             labelId="topic-filter-label"
             value={topicFilter}
             label="Topic"
-            onChange={(e) => setTopicFilter(e.target.value as Topic | 'all')}
+            onChange={(e) => setFilter('topic', e.target.value)}
           >
             <MenuItem value="all">All Topics</MenuItem>
             {TOPICS.map(t => (
@@ -105,7 +120,7 @@ export default function ProblemList({ problems, solvedSlugs: solvedSlugsArr }: P
             labelId="diff-filter-label"
             value={diffFilter}
             label="Difficulty"
-            onChange={(e) => setDiffFilter(e.target.value as Difficulty | 'all')}
+            onChange={(e) => setFilter('difficulty', e.target.value)}
           >
             <MenuItem value="all">All Difficulties</MenuItem>
             {DIFFICULTIES.map(d => (

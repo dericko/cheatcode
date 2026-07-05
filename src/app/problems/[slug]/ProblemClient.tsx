@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useColorScheme } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -44,6 +44,7 @@ function starterForLanguage(problem: Problem, lang: Language): string {
 
 export default function ProblemClient({ problem }: { problem: Problem }) {
   const { colorScheme } = useColorScheme()
+  const router = useRouter()
 
   const [language, setLanguage] = useState<Language>(() => {
     if (typeof window === 'undefined') return 'typescript'
@@ -158,8 +159,7 @@ export default function ProblemClient({ problem }: { problem: Problem }) {
         <Toolbar variant="dense" sx={{ gap: 1, minHeight: 64 }}>
           {/* Back button */}
           <IconButton
-            component={Link}
-            href="/"
+            onClick={() => router.back()}
             size="small"
             edge="start"
             aria-label="Back to problem list"
