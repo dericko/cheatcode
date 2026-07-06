@@ -1,4 +1,4 @@
-I was annoyed at Leetcode paywalls, so I vibe coded this instead to run through some familiar problems. Fire this up locally and run it in your own browswer. It'll save editor changes and completed coding challenges in browser storage.
+I was annoyed at Leetcode paywalls, so I vibe coded this instead to run through some familiar problems. Fire this up locally and run it in your own browser. It'll save editor changes and completed coding challenges in browser storage.
 
 Security -- this app interprets editor code on your server, so be sure to audit for code-injection vulnerabilities before running this publically!
 
